@@ -73,7 +73,7 @@ class WCPIMH_Import
         add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
         // Cron jobs.
         if ( WP_DEBUG ) {
-            add_action( 'admin_head', array( $this, 'cron_sync_products' ), 20 );
+            //add_action( 'admin_head', array( $this, 'cron_sync_products' ), 20 );
         }
         $imh_settings = get_option( 'imhset' );
         $sync_period = ( isset( $imh_settings['wcpimh_sync'] ) ? strval( $imh_settings['wcpimh_sync'] ) : 'no' );
@@ -194,27 +194,31 @@ class WCPIMH_Import
         $extension = explode( '/', $content_type, 2 )[1];
         $filename = get_the_title( $product_id ) . '.' . $extension;
         $upload = wp_upload_bits( $filename, null, $body );
-        $attachment = array(
-            'guid'           => $upload['url'],
-            'post_mime_type' => $content_type,
-            'post_title'     => get_the_title( $product_id ),
-            'post_content'   => '',
-            'post_status'    => 'inherit',
-        );
-        $attach_id = wp_insert_attachment( $attachment, $upload['file'], 0 );
-        add_post_meta(
-            $product_id,
-            '_thumbnail_id',
-            $attach_id,
-            true
-        );
         
-        if ( isset( $body_response['errors'] ) ) {
-            error_admin_message( 'ERROR', $body_response['errors'][0]['message'] . ' <br/> Api Call: /' );
-            return false;
+        if ( isset( $upload['url'] ) ) {
+            $attachment = array(
+                'guid'           => $upload['url'],
+                'post_mime_type' => $content_type,
+                'post_title'     => get_the_title( $product_id ),
+                'post_content'   => '',
+                'post_status'    => 'inherit',
+            );
+            $attach_id = wp_insert_attachment( $attachment, $upload['file'], 0 );
+            add_post_meta(
+                $product_id,
+                '_thumbnail_id',
+                $attach_id,
+                true
+            );
+            
+            if ( isset( $body_response['errors'] ) ) {
+                error_admin_message( 'ERROR', $body_response['errors'][0]['message'] . ' <br/> Api Call: /' );
+                return false;
+            }
+            
+            return $attach_id;
         }
-        
-        return $attach_id;
+    
     }
     
     /**
@@ -296,6 +300,13 @@ class WCPIMH_Import
         return $attribute_id;
     }
     
+    /**
+     * Create global attributes in WooCommerce
+     *
+     * @param array   $attributes Attributes array.
+     * @param boolean $for_variation Is for variation.
+     * @return array
+     */
     private function make_attributes( $attributes, $for_variation = true )
     {
         $position = 0;
@@ -376,10 +387,10 @@ class WCPIMH_Import
     {
         $level = 0;
         $cats_ids = array();
-        $product_cat = ( $this->is_woocommerce_active ? 'product_cat' : 'download_category' );
+        $taxonomy_name = ( $this->is_woocommerce_active ? 'product_cat' : 'download_category' );
         foreach ( $product_cat_names as $product_cat_name ) {
             $cat_slug = sanitize_title( $product_cat_name );
-            $product_cat = get_term_by( 'slug', $cat_slug, 'product_cat' );
+            $product_cat = get_term_by( 'slug', $cat_slug, $taxonomy_name );
             
             if ( $product_cat ) {
                 // Finds the category.
@@ -390,7 +401,7 @@ class WCPIMH_Import
                     $parent_prod_id = $cats_ids[$level - 1];
                 }
                 // Creates the category.
-                $term = wp_insert_term( $product_cat_name, $product_cat, array(
+                $term = wp_insert_term( $product_cat_name, $taxonomy_name, array(
                     'slug'   => $cat_slug,
                     'parent' => $parent_prod_id,
                 ) );
@@ -412,11 +423,21 @@ class WCPIMH_Import
      * @param string $type Type of the product.
      * @return void.
      */
-    private function sync_product( $item, $product_id = 0, $type )
+    private function sync_product(
+        $item,
+        $product_id = 0,
+        $type,
+        $pack_items = null
+    )
     {
         
         if ( $this->is_woocommerce_active ) {
-            $this->sync_product_woocommerce( $item, $product_id, $type );
+            $this->sync_product_woocommerce(
+                $item,
+                $product_id,
+                $type,
+                $pack_items
+            );
         } elseif ( $this->is_edd_active ) {
             $this->sync_product_edd( $item, $product_id, $type );
         }
@@ -471,9 +492,15 @@ class WCPIMH_Import
      * @param object $item Item Object from holded.
      * @param string $product_id Product ID. If is null, is new product.
      * @param string $type Type of the product.
+     * @param array  $pack_items Array of packs: post_id and qty.
      * @return void.
      */
-    private function sync_product_woocommerce( $item, $product_id = 0, $type )
+    private function sync_product_woocommerce(
+        $item,
+        $product_id = 0,
+        $type,
+        $pack_items = null
+    )
     {
         $imh_settings = get_option( 'imhset' );
         $import_stock = ( isset( $imh_settings['wcpimh_stock'] ) ? $imh_settings['wcpimh_stock'] : 'no' );
@@ -493,6 +520,8 @@ class WCPIMH_Import
             $product = new \WC_Product( $product_id );
         } elseif ( 'variable' === $type && cmk_fs()->is__premium_only() ) {
             $product = new \WC_Product_Variable( $product_id );
+        } elseif ( 'pack' === $type && cmk_fs()->is__premium_only() ) {
+            $product = new \WC_Product( $product_id );
         }
         
         // Common and default properties.
@@ -516,7 +545,7 @@ class WCPIMH_Import
                 'total_sales'        => '',
                 'tax_status'         => 'taxable',
                 'tax_class'          => '',
-                'manage_stock'       => false,
+                'manage_stock'       => ( 'yes' === $import_stock ? true : false ),
                 'stock_quantity'     => null,
                 'sold_individually'  => false,
                 'weight'             => ( $is_virtual ? '' : $item['weight'] ),
@@ -545,7 +574,7 @@ class WCPIMH_Import
         $product->save();
         $product_id = $product->get_id();
         
-        if ( 'simple' === $type ) {
+        if ( 'simple' === $type || 'grouped' === $type ) {
             // Values for simple products.
             $product_props['sku'] = $item['sku'];
             // Check if the product can be sold.
@@ -575,16 +604,33 @@ class WCPIMH_Import
                 $product_props['stock_status'] = 'outofstock';
                 wp_set_object_terms( $product_id, array( 'exclude-from-catalog', 'exclude-from-search' ), 'product_visibility' );
             }
-        
+            
+            update_post_meta( $product_id, '_holded_productid', $item['id'] );
         } elseif ( 'variable' === $type && cmk_fs()->is__premium_only() ) {
             $attributes = array();
             $attributes_prod = array();
+            $parent_sku = $product->get_sku();
             
             if ( !$is_new_product ) {
-                $variations = $product->get_available_variations();
-                $variations_array = wp_list_pluck( $variations, 'sku', 'variation_id' );
+                $variations = $product->get_children();
+                foreach ( $product->get_children( false ) as $child_id ) {
+                    // get an instance of the WC_Variation_product Object
+                    $variation_children = wc_get_product( $child_id );
+                    if ( !$variation_children || !$variation_children->exists() ) {
+                        continue;
+                    }
+                    $variations_array[$child_id] = $variation_children->get_sku();
+                }
             }
             
+            // Remove variations without SKU blank.
+            if ( !empty($variations_array) ) {
+                foreach ( $variations_array as $variation_id => $variation_sku ) {
+                    if ( $parent_sku == $variation_sku ) {
+                        wp_delete_post( $variation_id, false );
+                    }
+                }
+            }
             foreach ( $item['variants'] as $variant ) {
                 $variation_id = 0;
                 // default value.
@@ -609,7 +655,7 @@ class WCPIMH_Import
                 // Get all Attributes for the product.
                 foreach ( $variant['categoryFields'] as $category_fields ) {
                     
-                    if ( !isset( $category_fields['field'] ) && $category_fields ) {
+                    if ( isset( $category_fields['field'] ) && $category_fields ) {
                         if ( !in_array( $category_fields['field'], $attributes[$category_fields['name']], true ) ) {
                             $attributes[$category_fields['name']][] = $category_fields['field'];
                         }
@@ -669,8 +715,9 @@ class WCPIMH_Import
                     $variation->set_sku( $variant['sku'] );
                 }
                 $variation->save();
+                update_post_meta( $variation_id, '_holded_productid', $variant['id'] );
             }
-            $product_props['attributes'] = $this->make_attributes( $attributes, true );
+            $var_prop = $this->make_attributes( $attributes, true );
             $data_store = $product->get_data_store();
             $data_store->sort_all_product_variations( $product_id );
             // Check if WooCommerce Variations have more than Holded and unset.
@@ -684,6 +731,7 @@ class WCPIMH_Import
             }
             $attributes = array();
             $attributes_prod = array();
+            $att_props = array();
             foreach ( $item['attributes'] as $attribute ) {
                 if ( !in_array( $attribute['value'], $attributes[$attribute['name']], true ) ) {
                     $attributes[$attribute['name']][] = $attribute['value'];
@@ -692,12 +740,41 @@ class WCPIMH_Import
                 $attributes_prod['attribute_pa_' . $attribute_name] = wc_sanitize_taxonomy_name( $attribute['value'] );
                 $att_props = $this->make_attributes( $attributes, false );
             }
-            $product_props['attributes'] = array_merge( $var_prop, $att_props );
+            
+            if ( !empty($att_props) ) {
+                $product_props['attributes'] = array_merge( $var_prop, $att_props );
+            } else {
+                $product_props['attributes'] = $var_prop;
+            }
+        
+        } elseif ( 'pack' === $type && cmk_fs()->is__premium_only() ) {
+            $wosb_metas = array(
+                'woosb_ids'                    => $pack_items,
+                'woosb_disable_auto_price'     => 'off',
+                'woosb_discount'               => 0,
+                'woosb_discount_amount'        => '',
+                'woosb_shipping_fee'           => 'whole',
+                'woosb_optional_products'      => 'off',
+                'woosb_manage_stock'           => 'off',
+                'woosb_limit_each_min'         => '',
+                'woosb_limit_each_max'         => '',
+                'woosb_limit_each_min_default' => 'off',
+                'woosb_limit_whole_min'        => '',
+                'woosb_limit_whole_max'        => '',
+                'woosb_custom_price'           => $item['price'],
+            );
+            foreach ( $wosb_metas as $key => $value ) {
+                update_post_meta( $product_id, $key, $value );
+            }
+            update_post_meta( $product_id, '_holded_productid', $item['id'] );
         }
         
         // Set properties and save.
         $product->set_props( $product_props );
         $product->save();
+        if ( 'pack' === $type && cmk_fs()->is__premium_only() ) {
+            wp_set_object_terms( $product_id, 'woosb', 'product_type' );
+        }
     }
     
     /**
@@ -720,6 +797,83 @@ class WCPIMH_Import
     }
     
     /**
+     * Creates the post for the product from item
+     *
+     * @param [type] $item
+     * @return void
+     */
+    private function create_product_post( $item )
+    {
+        $imh_settings = get_option( 'imhset' );
+        $prod_status = ( isset( $imh_settings['wcpimh_prodst'] ) && $imh_settings['wcpimh_prodst'] ? $imh_settings['wcpimh_prodst'] : 'draft' );
+        
+        if ( $this->is_woocommerce_active ) {
+            $post_type = 'product';
+            $sku_key = '_sku';
+        } elseif ( $this->is_edd_active ) {
+            $post_type = 'download';
+            $sku_key = 'edd_sku';
+        }
+        
+        $post_arg = array(
+            'post_title'   => ( $item['name'] ? $item['name'] : '' ),
+            'post_content' => ( $item['desc'] ? $item['desc'] : '' ),
+            'post_status'  => $prod_status,
+            'post_type'    => $post_type,
+        );
+        $post_id = wp_insert_post( $post_arg );
+        if ( $post_id ) {
+            update_post_meta( $post_id, $sku_key, $item['sku'] );
+        }
+        return $post_id;
+    }
+    
+    /**
+     * Creates the simple product post from item
+     *
+     * @param array $item
+     * @return int
+     */
+    private function sync_product_simple( $item, $from_pack = false )
+    {
+        $post_id = $this->find_product( $item['sku'] );
+        if ( !$post_id ) {
+            $post_id = $this->create_product_post( $item );
+        }
+        
+        if ( $post_id && $item['sku'] && 'simple' == $item['kind'] ) {
+            if ( $this->is_woocommerce_active ) {
+                wp_set_object_terms( $post_id, 'simple', 'product_type' );
+            }
+            // Update meta for product.
+            $this->sync_product( $item, $post_id, 'simple' );
+        }
+        
+        
+        if ( $from_pack ) {
+            $this->ajax_msg .= '<br/>';
+            
+            if ( !$post_id ) {
+                $this->ajax_msg .= __( 'Subproduct created: ', 'import-holded-products-woocommerce' );
+            } else {
+                $this->ajax_msg .= __( 'Subproduct synced: ', 'import-holded-products-woocommerce' );
+            }
+        
+        } else {
+            
+            if ( !$post_id ) {
+                $this->ajax_msg .= __( 'Product created: ', 'import-holded-products-woocommerce' );
+            } else {
+                $this->ajax_msg .= __( 'Product synced: ', 'import-holded-products-woocommerce' );
+            }
+        
+        }
+        
+        $this->ajax_msg .= $item['name'] . '. SKU: ' . $item['sku'] . ' (' . $item['kind'] . ')';
+        return $post_id;
+    }
+    
+    /**
      * Import products from API
      *
      * @return void
@@ -739,6 +893,13 @@ class WCPIMH_Import
         } elseif ( $this->is_edd_active ) {
             $post_type = 'download';
             $sku_key = 'edd_sku';
+        }
+        
+        
+        if ( in_array( 'woo-product-bundle/wpc-product-bundles.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+            $plugin_grouped_prod_active = true;
+        } else {
+            $plugin_grouped_prod_active = false;
         }
         
         $syncLoop = ( isset( $syncLoop ) ? $syncLoop : 0 );
@@ -784,10 +945,8 @@ class WCPIMH_Import
             $item = $products_array[$syncLoop];
             $error_products_html = '';
             $this->msg_error_products = array();
-            if ( function_exists( 'wp_get_environment_type' ) && 'local' === wp_get_environment_type() ) {
-                // Import less products in local environment.
-                $products_count = MAX_LOCAL_LOOP;
-            }
+            // For testing:
+            // $products_count = MAX_LOCAL_LOOP; .
             
             if ( $products_count ) {
                 
@@ -813,48 +972,7 @@ class WCPIMH_Import
                     $is_filtered_product = $this->filter_product( $item['tags'] );
                     
                     if ( !$is_filtered_product && $item['sku'] && 'simple' === $item['kind'] ) {
-                        $post_id = $this->find_product( $item['sku'] );
-                        
-                        if ( !$post_id ) {
-                            $post_arg = array(
-                                'post_title'   => ( $item['name'] ? $item['name'] : '' ),
-                                'post_content' => ( $item['desc'] ? $item['desc'] : '' ),
-                                'post_status'  => $prod_status,
-                                'post_type'    => $post_type,
-                            );
-                            $post_id = wp_insert_post( $post_arg );
-                            if ( $post_id ) {
-                                $attach_id = update_post_meta( $post_id, $sku_key, $item['sku'] );
-                            }
-                        }
-                        
-                        
-                        if ( $post_id && $item['sku'] && 'simple' == $item['kind'] ) {
-                            if ( $this->is_woocommerce_active ) {
-                                wp_set_object_terms( $post_id, 'simple', 'product_type' );
-                            }
-                            // Update meta for product.
-                            $this->sync_product( $item, $post_id, 'simple' );
-                        } else {
-                            
-                            if ( $doing_ajax ) {
-                                wp_send_json_error( array(
-                                    'msg' => __( 'There was an error while inserting new product!', 'import-holded-products-woocommerce' ) . ' ' . $item['name'],
-                                ) );
-                            } else {
-                                die( esc_html( __( 'There was an error while inserting new product!', 'import-holded-products-woocommerce' ) ) );
-                            }
-                        
-                        }
-                        
-                        
-                        if ( !$post_id ) {
-                            $this->ajax_msg .= $msg_product_created;
-                        } else {
-                            $this->ajax_msg .= $msg_product_synced;
-                        }
-                        
-                        $this->ajax_msg .= $item['name'] . '. SKU: ' . $item['sku'] . ' (' . $item['kind'] . ')';
+                        $this->sync_product_simple( $item );
                     } elseif ( !$is_filtered_product && 'variants' === $item['kind'] && cmk_fs()->is__premium_only() && $this->is_woocommerce_active ) {
                         // Variable product.
                         // Check if any variants exists.
@@ -891,6 +1009,61 @@ class WCPIMH_Import
                             $this->ajax_msg .= $item['name'] . '. SKU: ' . $item['sku'] . '(' . $item['kind'] . ') <br/>';
                         }
                     
+                    } elseif ( !$is_filtered_product && 'pack' === $item['kind'] && cmk_fs()->is__premium_only() && $this->is_woocommerce_active && $plugin_grouped_prod_active ) {
+                        $post_id = $this->find_product( $item['sku'] );
+                        
+                        if ( !$post_id ) {
+                            $post_id = $this->create_product_post( $item );
+                            wp_set_object_terms( $post_id, 'woosb', 'product_type' );
+                        }
+                        
+                        
+                        if ( $post_id && $item['sku'] && 'pack' == $item['kind'] ) {
+                            // Create subproducts before.
+                            $pack_items = '';
+                            
+                            if ( isset( $item['packItems'] ) && !empty($item['packItems']) ) {
+                                foreach ( $item['packItems'] as $pack_item ) {
+                                    $item_simple = $this->get_products( $pack_item['pid'] );
+                                    $product_pack_id = $this->sync_product_simple( $item_simple, true );
+                                    $pack_items .= $product_pack_id . '/' . $pack_item['u'] . ',';
+                                    $this->ajax_msg .= ' x ' . $pack_item['u'];
+                                }
+                                $this->ajax_msg .= '<br/>';
+                                $pack_items = substr( $pack_items, 0, -1 );
+                            }
+                            
+                            // Update meta for product.
+                            $this->sync_product(
+                                $item,
+                                $post_id,
+                                'pack',
+                                $pack_items
+                            );
+                        } else {
+                            
+                            if ( $doing_ajax ) {
+                                wp_send_json_error( array(
+                                    'msg' => __( 'There was an error while inserting new product!', 'import-holded-products-woocommerce' ) . ' ' . $item['name'],
+                                ) );
+                            } else {
+                                die( esc_html( __( 'There was an error while inserting new product!', 'import-holded-products-woocommerce' ) ) );
+                            }
+                        
+                        }
+                        
+                        
+                        if ( !$post_id ) {
+                            $this->ajax_msg .= $msg_product_created;
+                        } else {
+                            $this->ajax_msg .= $msg_product_synced;
+                        }
+                        
+                        $this->ajax_msg .= $item['name'] . '. SKU: ' . $item['sku'] . ' (' . $item['kind'] . ')';
+                    } elseif ( !$is_filtered_product && 'pack' === $item['kind'] && cmk_fs()->is__premium_only() && $this->is_woocommerce_active && !$plugin_grouped_prod_active ) {
+                        $plugin_url = $this->ajax_msg .= '<span class="warning">' . __( 'Product needs Plugin to import: ', 'import-holded-products-woocommerce' );
+                        $this->ajax_msg .= '<a href="https://wordpress.org/plugins/woo-product-bundle/" target="_blank">WPC Product Bundles for WooCommerce</a> ';
+                        $this->ajax_msg .= '(' . $item['kind'] . ') </span></br>';
                     } elseif ( $is_filtered_product ) {
                         // Product not synced without SKU.
                         $this->ajax_msg .= '<span class="warning">' . __( 'Product filtered to not import: ', 'import-holded-products-woocommerce' ) . $item['name'] . '(' . $item['kind'] . ') </span></br>';
@@ -922,6 +1095,9 @@ class WCPIMH_Import
                     
                     if ( $products_synced <= $products_count ) {
                         $this->ajax_msg = '[' . date_i18n( 'H:i:s' ) . '] ' . $products_synced . '/' . $products_count . ' ' . __( 'products. ', 'import-holded-products-woocommerce' ) . $this->ajax_msg;
+                        if ( $post_id ) {
+                            $this->ajax_msg .= ' <a href="' . get_edit_post_link( $post_id ) . '" target="_blank">' . __( 'View', 'import-holded-products-woocommerce' ) . '</a>';
+                        }
                         if ( $products_synced == $products_count ) {
                             $this->ajax_msg .= '<p class="finish">' . __( 'All caught up!', 'import-holded-products-woocommerce' ) . '</p>';
                         }
@@ -1116,7 +1292,7 @@ class WCPIMH_Import
             ?></h2><p><?php 
             _e( 'After you fillup the API settings, use the button below to import the products. The importing process may take a while and you need to keep this page open to complete it.', 'import-holded-products-woocommerce' );
             ?><br/></p><button id="start-sync" class="button button-primary"<?php 
-            if ( false === $this->check_can_sync() ) {
+            if ( false === sync_ecommerce_check_can_sync() ) {
                 echo  ' disabled' ;
             }
             ?>><?php 
@@ -1182,20 +1358,6 @@ class WCPIMH_Import
     }
     
     /**
-     * Checks if can syncs
-     *
-     * @return boolean
-     */
-    private function check_can_sync()
-    {
-        $imh_settings = get_option( 'imhset' );
-        if ( !isset( $imh_settings['wcpimh_api'] ) ) {
-            return false;
-        }
-        return true;
-    }
-    
-    /**
      * # Sync process
      * ---------------------------------------------------------------------------------------------------- */
     public function cron_sync_products()
@@ -1225,8 +1387,6 @@ class WCPIMH_Import
      */
     private function create_sync_product( $item )
     {
-        $imh_settings = get_option( 'imhset' );
-        $prod_status = ( isset( $imh_settings['wcpimh_prodst'] ) && $imh_settings['wcpimh_prodst'] ? $imh_settings['wcpimh_prodst'] : 'draft' );
         
         if ( $this->is_woocommerce_active ) {
             $post_type = 'product';
@@ -1237,22 +1397,11 @@ class WCPIMH_Import
         }
         
         
-        if ( $item['sku'] && 'simple' === $item['kind'] ) {
+        if ( isset( $item['sku'] ) && $item['sku'] && 'simple' === $item['kind'] ) {
             $post_id = $this->find_product( $item['sku'] );
-            
             if ( !$post_id ) {
-                $post_arg = array(
-                    'post_title'   => ( $item['name'] ? $item['name'] : '' ),
-                    'post_content' => ( $item['desc'] ? $item['desc'] : '' ),
-                    'post_status'  => $prod_status,
-                    'post_type'    => $post_type,
-                );
-                $post_id = wp_insert_post( $post_arg );
-                if ( $post_id ) {
-                    $attach_id = update_post_meta( $post_id, $sku_key, $item['sku'] );
-                }
+                $post_id = $this->create_product_post( $item );
             }
-            
             
             if ( $post_id && $item['sku'] && 'simple' == $item['kind'] ) {
                 if ( $this->is_woocommerce_active ) {
@@ -1262,7 +1411,7 @@ class WCPIMH_Import
                 $this->sync_product( $item, $post_id, 'simple' );
             }
         
-        } elseif ( 'variants' === $item['kind'] && cmk_fs()->is__premium_only() && $this->is_woocommerce_active ) {
+        } elseif ( isset( $item['kind'] ) && 'variants' === $item['kind'] && cmk_fs()->is__premium_only() && $this->is_woocommerce_active ) {
             // Variable product.
             // Check if any variants exists.
             $post_parent = 0;
@@ -1298,14 +1447,14 @@ class WCPIMH_Import
                 $this->ajax_msg .= $item['name'] . '. SKU: ' . $item['sku'] . '(' . $item['kind'] . ') <br/>';
             }
         
-        } elseif ( '' === $item['sku'] && 'simple' === $item['kind'] ) {
+        } elseif ( isset( $item['sku'] ) && '' === $item['sku'] && isset( $item['kind'] ) && 'simple' === $item['kind'] ) {
             $this->send_email_errors( __( 'SKU not finded in Simple product. Product not imported ', 'import-holded-products-woocommerce' ), array(
                 'Product id:' . $item['id'],
                 'Product name:' . $item['name'],
                 'Product sku:' . $item['sku'],
                 'Product Kind:' . $item['kind']
             ) );
-        } elseif ( 'simple' !== $item['kind'] ) {
+        } elseif ( isset( $item['kind'] ) && 'simple' !== $item['kind'] ) {
             $this->send_email_errors( __( 'Product type not supported. Product not imported ', 'import-holded-products-woocommerce' ), array(
                 'Product id:' . $item['id'],
                 'Product name:' . $item['name'],

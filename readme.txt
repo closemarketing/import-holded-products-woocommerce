@@ -1,13 +1,14 @@
-=== Import Holded for WooCommerce or Easy Digital Downloads ===
-Contributors: closemarketing, davidperez, sacrajaimez
+=== Sync Holded for WooCommerce or Easy Digital Downloads ===
+Contributors: closemarketing, davidperez, sacrajaimez, freemius
 Tags: holded, woocommerce
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZYGC6AT5JFQVE
+Donate link: https://close.marketing/go/donate/
 Requires at least: 4.0
-Tested up to: 5.5
-Stable tag: 1.2
-Version: 1.2
+Requires PHP: 5.6
+Tested up to: 5.8.2
+Stable tag: 1.3
+Version: 1.3
 
-Imports Products and data from Holded software to WooCommerce or Easy Digital Downloads.
+Syncs Products and data from Holded software to WooCommerce or Easy Digital Downloads.
 
 == Description ==
 
@@ -23,20 +24,28 @@ These are the features:
 - Import attributes as brands or others.
 - Import variable products.
 - Automate the syncronization.
+- Sync Orders to Holded.
+- Import pack products from Holded.
 
 [You could buy it here](https://checkout.freemius.com/mode/dialog/plugin/5133/plan/8469/)
 
-Discover Other plugins in our [Profile Page](https://profiles.wordpress.org/closemarketing/#content-plugins)
+Made by [Closemarketing](https://close.marketing/)
 
 == Installation ==
 
 Extract the zip file and just drop the contents in the wp-content/plugins/ directory of your
 WordPress installation and then activate the Plugin from Plugins page.
 
-
 == Developers ==
+[Official Repository GitHub](https://github.com/closemarketing/import-holded-products-woocommerce)
 
 == Changelog ==
+= 1.3 =
+*   Sync orders to Holded (Premium) automatically and force manually for past orders.
+*   Sync Pack products to Holded (Premium).
+*   Fix: Attributes duplicated in variation product not imported.
+*   Fix: Categories not imported in simple products.
+
 = 1.2 =
 *   Automate your syncronization! (Premium).
 *   Option email when is finished (Premium).
@@ -50,5 +59,5 @@ WordPress installation and then activate the Plugin from Plugins page.
 For the changelog of earlier versions, please refer to the separate changelog.txt file.
 
 == Links ==
-
-*   [Closemarketing](https://close.marketing/)
+*	[Closemarketing](https://close.marketing/)
+*	[Closemarketing plugins](https://profiles.wordpress.org/closemarketing/#content-plugins)

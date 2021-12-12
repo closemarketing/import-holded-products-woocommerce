@@ -25,3 +25,16 @@ function imhwc_is_active_ecommerce( $plugin ) {
 	}
 	return false;
 }
+
+/**
+ * Checks if can syncs
+ *
+ * @return boolean
+ */
+function sync_ecommerce_check_can_sync() {
+	$imh_settings = get_option( 'imhset' );
+	if ( ! isset( $imh_settings['wcpimh_api'] ) ) {
+		return false;
+	}
+	return true;
+}

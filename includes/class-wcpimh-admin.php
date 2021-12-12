@@ -139,7 +139,12 @@ class WCIMPH_Admin
 				<a href="?page=import_holded&tab=sync" class="nav-tab <?php 
         echo  ( 'sync' === $active_tab ? 'nav-tab-active' : '' ) ;
         ?>"><?php 
-        esc_html_e( 'Manual Synchronization', 'import-holded-products-woocommerce' );
+        esc_html_e( 'Sync products', 'import-holded-products-woocommerce' );
+        ?></a>
+				<a href="?page=import_holded&tab=orders" class="nav-tab <?php 
+        echo  ( 'orders' === $active_tab ? 'nav-tab-active' : '' ) ;
+        ?>"><?php 
+        esc_html_e( 'Sync Orders', 'import-holded-products-woocommerce' );
         ?></a>
 				<a href="?page=import_holded&tab=automate" class="nav-tab <?php 
         echo  ( 'automate' === $active_tab ? 'nav-tab-active' : '' ) ;
@@ -189,6 +194,11 @@ class WCIMPH_Admin
 			<?php 
         }
         
+        ?>
+			<?php 
+        if ( 'orders' === $active_tab ) {
+            $this->page_sync_orders();
+        }
         ?>
 		</div>
 		<?php 
@@ -287,6 +297,9 @@ class WCIMPH_Admin
             'import_holded_setting_section'
         );
         $name_catnp = __( 'Import category only in new products?', 'import-holded-products-woocommerce' );
+        $name_docorder = __( 'Document to create after order completed?', 'import-holded-products-woocommerce' );
+        $name_docorder = __( 'Status to sync Orders?', 'import-holded-products-woocommerce' );
+        $name_nif = __( 'Meta key for Billing NIF?', 'sync-ecommerce-neo' );
         /**
          * # Automate
          * ---------------------------------------------------------------------------------------------------- */
@@ -296,6 +309,17 @@ class WCIMPH_Admin
             array( $this, 'import_holded_section_automate' ),
             'import-holded-automate'
         );
+    }
+    
+    /**
+     * Page Sync Orders
+     *
+     * @return void
+     */
+    public function page_sync_orders()
+    {
+        esc_html_e( 'Section only for Premium version', 'import-holded-products-woocommerce' );
+        echo  $this->show_get_premium() ;
     }
     
     /**
@@ -337,6 +361,15 @@ class WCIMPH_Admin
             if ( isset( $input['wcpimh_catnp'] ) ) {
                 $sanitary_values['wcpimh_catnp'] = $input['wcpimh_catnp'];
             }
+            if ( isset( $input['wcpimh_doctype'] ) ) {
+                $sanitary_values['wcpimh_doctype'] = $input['wcpimh_doctype'];
+            }
+            if ( isset( $input['wcpimh_ecstatus'] ) ) {
+                $sanitary_values['wcpimh_ecstatus'] = $input['wcpimh_ecstatus'];
+            }
+            if ( isset( $input['wcpimh_billing_key'] ) ) {
+                $sanitary_values['wcpimh_billing_key'] = $input['wcpimh_billing_key'];
+            }
             // Other tab.
             $sanitary_values['wcpimh_sync'] = ( isset( $imh_settings['wcpimh_sync'] ) ? $imh_settings['wcpimh_sync'] : 'no' );
             $sanitary_values['wcpimh_sync_num'] = ( isset( $imh_settings['wcpimh_sync_num'] ) ? $imh_settings['wcpimh_sync_num'] : 5 );
@@ -361,6 +394,9 @@ class WCIMPH_Admin
             $sanitary_values['wcpimh_filter'] = ( isset( $imh_settings['wcpimh_filter'] ) ? $imh_settings['wcpimh_filter'] : '' );
             $sanitary_values['wcpimh_rates'] = ( isset( $imh_settings['wcpimh_rates'] ) ? $imh_settings['wcpimh_rates'] : 'default' );
             $sanitary_values['wcpimh_catnp'] = ( isset( $imh_settings['wcpimh_catnp'] ) ? $imh_settings['wcpimh_catnp'] : 'yes' );
+            $sanitary_values['wcpimh_doctype'] = ( isset( $imh_settings['wcpimh_doctype'] ) ? $imh_settings['wcpimh_doctype'] : 'invoice' );
+            $sanitary_values['wcpimh_ecstatus'] = ( isset( $imh_settings['wcpimh_ecstatus'] ) ? $imh_settings['wcpimh_ecstatus'] : 'all' );
+            $sanitary_values['wcpimh_billing_key'] = ( isset( $imh_settings['wcpimh_billing_key'] ) ? $imh_settings['wcpimh_billing_key'] : 'invoice' );
         }
         
         return $sanitary_values;
@@ -369,13 +405,12 @@ class WCIMPH_Admin
     private function show_get_premium()
     {
         // Purchase notification.
-        $purchase_url = 'https://checkout.freemius.com/mode/dialog/plugin/5133/plan/8469/';
         $get_pro = sprintf( wp_kses( __( '<a href="%s">Get Pro version</a> to enable', 'import-holded-products-woocommerce' ), array(
             'a' => array(
             'href'   => array(),
             'target' => array(),
         ),
-        ) ), esc_url( $purchase_url ) );
+        ) ), esc_url( WCPIMH_PURCHASE_URL ) );
         return $get_pro;
     }
     
@@ -581,6 +616,95 @@ class WCIMPH_Admin
         ?></option>
 		</select>
 		<?php 
+    }
+    
+    public function wcpimh_doctype_callback()
+    {
+        $set_doctype = ( isset( $this->imh_settings['wcpimh_doctype'] ) ? $this->imh_settings['wcpimh_doctype'] : '' );
+        ?>
+		<select name="imhset[wcpimh_doctype]" id="wcpimh_doctype">
+			<?php 
+        $selected = ( $set_doctype === 'nosync' || $set_doctype === '' ? 'selected' : '' );
+        ?>
+			<option value="nosync" <?php 
+        echo  esc_html( $selected ) ;
+        ?>><?php 
+        esc_html_e( 'Not sync', 'import-holded-products-woocommerce' );
+        ?></option>
+
+			<?php 
+        $selected = ( isset( $set_doctype ) && 'invoice' === $set_doctype ? 'selected' : '' );
+        ?>
+			<option value="invoice" <?php 
+        echo  esc_html( $selected ) ;
+        ?>><?php 
+        esc_html_e( 'Invoice', 'import-holded-products-woocommerce' );
+        ?></option>
+
+			<?php 
+        $selected = ( isset( $set_doctype ) && 'salesreceipt' === $set_doctype ? 'selected' : '' );
+        ?>
+			<option value="salesreceipt" <?php 
+        echo  esc_html( $selected ) ;
+        ?>><?php 
+        esc_html_e( 'Sales receipt', 'import-holded-products-woocommerce' );
+        ?></option>
+
+			<?php 
+        $selected = ( isset( $set_doctype ) && 'salesorder' === $set_doctype ? 'selected' : '' );
+        ?>
+			<option value="salesorder" <?php 
+        echo  esc_html( $selected ) ;
+        ?>><?php 
+        esc_html_e( 'Sales order', 'import-holded-products-woocommerce' );
+        ?></option>
+
+			<?php 
+        $selected = ( isset( $set_doctype ) && 'waybill' === $set_doctype ? 'selected' : '' );
+        ?>
+			<option value="waybill" <?php 
+        echo  esc_html( $selected ) ;
+        ?>><?php 
+        esc_html_e( 'Waybill', 'import-holded-products-woocommerce' );
+        ?></option>
+		</select>
+		<?php 
+    }
+    
+    public function wcpimh_ecstatus_callback()
+    {
+        $set_doctype = ( isset( $this->imh_settings['wcpimh_ecstatus'] ) ? $this->imh_settings['wcpimh_ecstatus'] : '' );
+        ?>
+		<select name="imhset[wcpimh_ecstatus]" id="wcpimh_ecstatus">
+			<?php 
+        $selected = ( $set_doctype === 'nosync' || $set_doctype === '' ? 'selected' : '' );
+        ?>
+			<option value="all" <?php 
+        echo  esc_html( $selected ) ;
+        ?>><?php 
+        esc_html_e( 'All status orders', 'import-holded-products-woocommerce' );
+        ?></option>
+
+			<?php 
+        $selected = ( isset( $set_doctype ) && 'completed' === $set_doctype ? 'selected' : '' );
+        ?>
+			<option value="completed" <?php 
+        echo  esc_html( $selected ) ;
+        ?>><?php 
+        esc_html_e( 'Only Completed', 'import-holded-products-woocommerce' );
+        ?></option>
+		</select>
+		<?php 
+    }
+    
+    /**
+     * Callback Billing nif key
+     *
+     * @return void
+     */
+    public function wcpimh_billing_key_callback()
+    {
+        printf( '<input class="regular-text" type="text" name="imhset[wcpimh_billing_key]" id="wcpimh_billing_key" value="%s">', ( isset( $this->imh_settings['wcpimh_billing_key'] ) ? esc_attr( $this->imh_settings['wcpimh_billing_key'] ) : '_billing_vat' ) );
     }
     
     /**
