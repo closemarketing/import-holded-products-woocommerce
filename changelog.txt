@@ -1,0 +1,34 @@
+= Changelog archive =
+
+This is an archive of older changelog entries. Most recent entries are maintained in readme.txt
+
+= 1.2 =
+*   Automate your syncronization! (Premium).
+*   Option email when is finished  (Premium).
+*   Fix sku saved for EDD.
+*   Better metavalue search for SKU.
+*   Fix Holded Pagination (thanks to itSerra).
+*   Fix SKU variation (thanks to itSerra).
+
+
+= 1.1 =
+*   Fix bug not import files full list of products.
+*   Import Simple products to Easy Digital Downloads.
+*   [Premium] Import image files from Holded for WooCommerce and EDD.
+
+= 1.0 =
+*   Improved log syncronization.
+*   Better consitency between API Holded and WooCommerce.
+*   Refactored syncronization engine.
+*   Implemented Premium process.
+
+Premium Version:
+*   Import Categories nested.
+*   Import variable products.
+
+= 0.2 =
+*   Implemented library for statistics.
+*   First implementation of premium product.
+
+= 0.1 =
+*   First released.
