@@ -4,9 +4,9 @@ Tags: holded, woocommerce
 Donate link: https://close.marketing/go/donate/
 Requires at least: 4.0
 Requires PHP: 5.6
-Tested up to: 5.8.2
-Stable tag: 1.3
-Version: 1.3
+Tested up to: 5.9
+Stable tag: 1.4
+Version: 1.4
 
 Syncs Products and data from Holded software to WooCommerce or Easy Digital Downloads.
 
@@ -40,6 +40,9 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/import-holded-products-woocommerce)
 
 == Changelog ==
+= 1.4 =
+*   Option to not create document if order is free.
+
 = 1.3 =
 *   Sync orders to Holded (Premium) automatically and force manually for past orders.
 *   Sync Pack products to Holded (Premium).

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Plugin Name: Sync Ecommerce Holded
+ * Plugin Name: Sync Ecommerce Holded Premium
  * Plugin URI: https://www.closemarketing.es
  * Description: Syncs Products and data from Holded to WooCommerce or Easy Digital Downloads.
  * Author: closemarketing
  * Author URI: https://www.closemarketing.es/
- * Version: 1.3
+ * Version: 1.4
  * WC requires at least: 5.0
- * WC tested up to: 5.8.2
+ * WC tested up to: 5.9
  *
  * @package WordPress
  * Text Domain: import-holded-products-woocommerce
@@ -18,7 +18,7 @@
  *
  */
 defined( 'ABSPATH' ) || exit;
-define( 'WCPIMH_VERSION', '1.3' );
+define( 'WCPIMH_VERSION', '1.4' );
 define( 'WCPIMH_ECOMMERCE', array( 'woocommerce', 'edd' ) );
 define( 'WCPIMH_TABLE_SYNC', 'wcpimh_product_sync' );
 define( 'PLUGIN_PREFIX', 'wcpimh_' );

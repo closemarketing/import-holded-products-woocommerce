@@ -298,6 +298,7 @@ class WCIMPH_Admin
         );
         $name_catnp = __( 'Import category only in new products?', 'import-holded-products-woocommerce' );
         $name_docorder = __( 'Document to create after order completed?', 'import-holded-products-woocommerce' );
+        $name_docorder = __( 'Create document for free Orders?', 'import-holded-products-woocommerce' );
         $name_docorder = __( 'Status to sync Orders?', 'import-holded-products-woocommerce' );
         $name_nif = __( 'Meta key for Billing NIF?', 'sync-ecommerce-neo' );
         /**
@@ -364,6 +365,9 @@ class WCIMPH_Admin
             if ( isset( $input['wcpimh_doctype'] ) ) {
                 $sanitary_values['wcpimh_doctype'] = $input['wcpimh_doctype'];
             }
+            if ( isset( $input['wcpimh_freeorder'] ) ) {
+                $sanitary_values['wcpimh_freeorder'] = $input['wcpimh_freeorder'];
+            }
             if ( isset( $input['wcpimh_ecstatus'] ) ) {
                 $sanitary_values['wcpimh_ecstatus'] = $input['wcpimh_ecstatus'];
             }
@@ -395,6 +399,7 @@ class WCIMPH_Admin
             $sanitary_values['wcpimh_rates'] = ( isset( $imh_settings['wcpimh_rates'] ) ? $imh_settings['wcpimh_rates'] : 'default' );
             $sanitary_values['wcpimh_catnp'] = ( isset( $imh_settings['wcpimh_catnp'] ) ? $imh_settings['wcpimh_catnp'] : 'yes' );
             $sanitary_values['wcpimh_doctype'] = ( isset( $imh_settings['wcpimh_doctype'] ) ? $imh_settings['wcpimh_doctype'] : 'invoice' );
+            $sanitary_values['wcpimh_freeorder'] = ( isset( $imh_settings['wcpimh_freeorder'] ) ? $imh_settings['wcpimh_freeorder'] : 'no' );
             $sanitary_values['wcpimh_ecstatus'] = ( isset( $imh_settings['wcpimh_ecstatus'] ) ? $imh_settings['wcpimh_ecstatus'] : 'all' );
             $sanitary_values['wcpimh_billing_key'] = ( isset( $imh_settings['wcpimh_billing_key'] ) ? $imh_settings['wcpimh_billing_key'] : 'invoice' );
         }
@@ -671,13 +676,40 @@ class WCIMPH_Admin
 		<?php 
     }
     
+    public function wcpimh_freeorder_callback()
+    {
+        $set_freeorder = ( isset( $this->imh_settings['wcpimh_freeorder'] ) ? $this->imh_settings['wcpimh_freeorder'] : '' );
+        ?>
+		<select name="imhset[wcpimh_freeorder]" id="wcpimh_freeorder">
+			<?php 
+        $selected = ( $set_freeorder === 'no' || $set_freeorder === '' ? 'selected' : '' );
+        ?>
+			<option value="no" <?php 
+        echo  esc_html( $selected ) ;
+        ?>><?php 
+        esc_html_e( 'No', 'import-holded-products-woocommerce' );
+        ?></option>
+
+			<?php 
+        $selected = ( isset( $set_freeorder ) && 'yes' === $set_freeorder ? 'selected' : '' );
+        ?>
+			<option value="yes" <?php 
+        echo  esc_html( $selected ) ;
+        ?>><?php 
+        esc_html_e( 'Yes', 'import-holded-products-woocommerce' );
+        ?></option>
+
+		</select>
+		<?php 
+    }
+    
     public function wcpimh_ecstatus_callback()
     {
-        $set_doctype = ( isset( $this->imh_settings['wcpimh_ecstatus'] ) ? $this->imh_settings['wcpimh_ecstatus'] : '' );
+        $set_ecstatus = ( isset( $this->imh_settings['wcpimh_ecstatus'] ) ? $this->imh_settings['wcpimh_ecstatus'] : '' );
         ?>
 		<select name="imhset[wcpimh_ecstatus]" id="wcpimh_ecstatus">
 			<?php 
-        $selected = ( $set_doctype === 'nosync' || $set_doctype === '' ? 'selected' : '' );
+        $selected = ( $set_ecstatus === 'nosync' || $set_ecstatus === '' ? 'selected' : '' );
         ?>
 			<option value="all" <?php 
         echo  esc_html( $selected ) ;
@@ -686,7 +718,7 @@ class WCIMPH_Admin
         ?></option>
 
 			<?php 
-        $selected = ( isset( $set_doctype ) && 'completed' === $set_doctype ? 'selected' : '' );
+        $selected = ( isset( $set_ecstatus ) && 'completed' === $set_ecstatus ? 'selected' : '' );
         ?>
 			<option value="completed" <?php 
         echo  esc_html( $selected ) ;

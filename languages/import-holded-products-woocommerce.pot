@@ -1,17 +1,17 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Import Holded for WooCommerce or Easy Digital "
 "Downloads\n"
-"POT-Creation-Date: 2021-10-06 18:38+0200\n"
+"POT-Creation-Date: 2022-01-12 19:30+0100\n"
 "PO-Revision-Date: 2020-11-21 11:35+0100\n"
 "Last-Translator: David <david@closemarketing.es>\n"
 "Language-Team: David <david@closemarketing.es>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: import-holded-products-woocommerce.php\n"
@@ -23,55 +23,55 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 "X-Poedit-SearchPathExcluded-1: vendor\n"
 
-#: import-holded-products-woocommerce.php:61
+#: import-holded-products-woocommerce.php:69
 msgid ""
 "Sync Ecommerce Holded Premium now in version 1.3 brings you to sync Orders "
 "after they are completed."
 msgstr ""
 
-#: import-holded-products-woocommerce.php:63
+#: import-holded-products-woocommerce.php:71
 msgid ""
 "You have to choose the document to create after order completed in "
 "settings."
 msgstr ""
 
-#: import-holded-products-woocommerce.php:65
+#: import-holded-products-woocommerce.php:73
 msgid "Go to Settings"
 msgstr ""
 
-#: import-holded-products-woocommerce.php:67
+#: import-holded-products-woocommerce.php:76
 msgid "Purchase Premium Version"
 msgstr ""
 
-#: import-holded-products-woocommerce.php:131
+#: import-holded-products-woocommerce.php:154
 msgid "Every 5 minutes"
 msgstr ""
 
-#: import-holded-products-woocommerce.php:137
+#: import-holded-products-woocommerce.php:160
 msgid "Every 15 minutes"
 msgstr ""
 
-#: import-holded-products-woocommerce.php:143
+#: import-holded-products-woocommerce.php:166
 msgid "Every 30 Minutes"
 msgstr ""
 
-#: import-holded-products-woocommerce.php:149
+#: import-holded-products-woocommerce.php:172
 msgid "Every 1 Hour"
 msgstr ""
 
-#: import-holded-products-woocommerce.php:155
+#: import-holded-products-woocommerce.php:178
 msgid "Every 3 Hours"
 msgstr ""
 
-#: import-holded-products-woocommerce.php:161
+#: import-holded-products-woocommerce.php:184
 msgid "Every 6 Hours"
 msgstr ""
 
-#: import-holded-products-woocommerce.php:167
+#: import-holded-products-woocommerce.php:190
 msgid "Every 12 Hours"
 msgstr ""
 
-#: import-holded-products-woocommerce.php:292
+#: import-holded-products-woocommerce.php:315
 msgid ""
 "WooCommerce Holded Integration requires WooCommerce to be installed and "
 "activated!"
@@ -98,19 +98,19 @@ msgid "Holded Product Importing Settings"
 msgstr ""
 
 #: includes/class-wcpimh-admin.php:135
-msgid "Manual Synchronization"
+msgid "Sync products"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:136 includes/class-wcpimh-admin.php:318
+#: includes/class-wcpimh-admin.php:136
+msgid "Sync Orders"
+msgstr ""
+
+#: includes/class-wcpimh-admin.php:137 includes/class-wcpimh-admin.php:340
 msgid "Automate"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:137
-msgid "Settings"
-msgstr ""
-
 #: includes/class-wcpimh-admin.php:138
-msgid "Orders"
+msgid "Settings"
 msgstr ""
 
 #: includes/class-wcpimh-admin.php:150
@@ -174,135 +174,139 @@ msgid "Document to create after order completed?"
 msgstr ""
 
 #: includes/class-wcpimh-admin.php:302
+msgid "Create document for free Orders?"
+msgstr ""
+
+#: includes/class-wcpimh-admin.php:313
+msgid "Status to sync Orders?"
+msgstr ""
+
+#: includes/class-wcpimh-admin.php:324
 msgid "Meta key for Billing NIF?"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:323
+#: includes/class-wcpimh-admin.php:345
 msgid "When do you want to sync?"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:334
+#: includes/class-wcpimh-admin.php:356
 msgid "How many products do you want to sync each time?"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:347
+#: includes/class-wcpimh-admin.php:369
 msgid "Do you want to receive an email when all products are synced?"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:363
-msgid "Synchronize Orders"
-msgstr ""
-
-#: includes/class-wcpimh-admin.php:364
-msgid ""
-"Synchronize previous orders in \"Completed\" status with your Holded ERP."
-msgstr ""
-
-#: includes/class-wcpimh-admin.php:366
-msgid "Sync"
-msgstr ""
-
-#: includes/class-wcpimh-admin.php:368 includes/class-wcpimh-admin.php:488
+#: includes/class-wcpimh-admin.php:387 includes/class-wcpimh-admin.php:517
 msgid "Section only for Premium version"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:465
+#: includes/class-wcpimh-admin.php:494
 #, php-format
 msgid "<a href=\"%s\">Get Pro version</a> to enable"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:486
+#: includes/class-wcpimh-admin.php:515
 msgid "Make your settings to automate the sync."
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:500
+#: includes/class-wcpimh-admin.php:529
 #, php-format
 msgid ""
 "Put the connection API key settings in order to connect and sync products. "
 "You can go here <a href = \"%s\" target = \"_blank\">App Holded API</a>. "
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:518 includes/class-wcpimh-admin.php:546
-#: includes/class-wcpimh-admin.php:557 includes/class-wcpimh-admin.php:604
-#: includes/class-wcpimh-admin.php:699
+#: includes/class-wcpimh-admin.php:547 includes/class-wcpimh-admin.php:575
+#: includes/class-wcpimh-admin.php:586 includes/class-wcpimh-admin.php:633
+#: includes/class-wcpimh-admin.php:670 includes/class-wcpimh-admin.php:755
 msgid "Yes"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:520 includes/class-wcpimh-admin.php:544
-#: includes/class-wcpimh-admin.php:555 includes/class-wcpimh-admin.php:606
-#: includes/class-wcpimh-admin.php:654 includes/class-wcpimh-admin.php:701
+#: includes/class-wcpimh-admin.php:549 includes/class-wcpimh-admin.php:573
+#: includes/class-wcpimh-admin.php:584 includes/class-wcpimh-admin.php:635
+#: includes/class-wcpimh-admin.php:667 includes/class-wcpimh-admin.php:710
+#: includes/class-wcpimh-admin.php:757
 msgid "No"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:529
+#: includes/class-wcpimh-admin.php:558
 msgid "Draft"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:531
+#: includes/class-wcpimh-admin.php:560
 msgid "Publish"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:533
+#: includes/class-wcpimh-admin.php:562
 msgid "Pending"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:535
+#: includes/class-wcpimh-admin.php:564
 msgid "Private"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:559
+#: includes/class-wcpimh-admin.php:588
 msgid "Notify"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:616
+#: includes/class-wcpimh-admin.php:645
 msgid "Not sync"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:619
+#: includes/class-wcpimh-admin.php:648
 msgid "Invoice"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:622
+#: includes/class-wcpimh-admin.php:651
 msgid "Sales receipt"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:625
+#: includes/class-wcpimh-admin.php:654
 msgid "Sales order"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:628
+#: includes/class-wcpimh-admin.php:657
 msgid "Waybill"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:657
+#: includes/class-wcpimh-admin.php:681
+msgid "All status orders"
+msgstr ""
+
+#: includes/class-wcpimh-admin.php:684
+msgid "Only Completed"
+msgstr ""
+
+#: includes/class-wcpimh-admin.php:713
 msgid "Every day"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:660
+#: includes/class-wcpimh-admin.php:716
 msgid "Every twelve hours"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:663
+#: includes/class-wcpimh-admin.php:719
 msgid "Every six hours"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:666
+#: includes/class-wcpimh-admin.php:722
 msgid "Every three hours"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:669
+#: includes/class-wcpimh-admin.php:725
 msgid "Every hour"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:672
+#: includes/class-wcpimh-admin.php:728
 msgid "Every thirty minutes"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:675
+#: includes/class-wcpimh-admin.php:731
 msgid "Every fifteen minutes"
 msgstr ""
 
-#: includes/class-wcpimh-admin.php:678
+#: includes/class-wcpimh-admin.php:734
 msgid "Every five minutes"
 msgstr ""
 
@@ -310,202 +314,205 @@ msgstr ""
 msgid "Variation error: "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:898
+#: includes/class-wcpimh-import.php:899
 msgid "Subproduct created: "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:900
+#: includes/class-wcpimh-import.php:901
 msgid "Subproduct synced: "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:904 includes/class-wcpimh-import.php:944
+#: includes/class-wcpimh-import.php:905 includes/class-wcpimh-import.php:945
 msgid "Product created: "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:906 includes/class-wcpimh-import.php:945
+#: includes/class-wcpimh-import.php:907 includes/class-wcpimh-import.php:946
 msgid "Product synced: "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:993 includes/class-wcpimh-import.php:997
-#: includes/class-wcpimh-import.php:1146
-#: includes/class-wcpimh-import.php:1148
+#: includes/class-wcpimh-import.php:994 includes/class-wcpimh-import.php:998
+#: includes/class-wcpimh-import.php:1147
+#: includes/class-wcpimh-import.php:1149
 msgid "No products to import"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1026
-#: includes/class-wcpimh-import.php:1419
+#: includes/class-wcpimh-import.php:1027
+#: includes/class-wcpimh-import.php:1407
 msgid "Product not imported becouse any variant has got SKU: "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1065
-#: includes/class-wcpimh-import.php:1069
+#: includes/class-wcpimh-import.php:1066
+#: includes/class-wcpimh-import.php:1070
 msgid "There was an error while inserting new product!"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1080
+#: includes/class-wcpimh-import.php:1081
 msgid "Product needs Plugin to import: "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1086
+#: includes/class-wcpimh-import.php:1087
 msgid "Product filtered to not import: "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1089
+#: includes/class-wcpimh-import.php:1090
 msgid "SKU not finded in Simple product. Product not imported: "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1095
+#: includes/class-wcpimh-import.php:1096
 msgid "SKU not finded in Simple product. Product not imported. "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1099
-#: includes/class-wcpimh-import.php:1105
+#: includes/class-wcpimh-import.php:1100
+#: includes/class-wcpimh-import.php:1106
 msgid "Product type not supported. Product not imported: "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1114
+#: includes/class-wcpimh-import.php:1115
 msgid "products. "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1116
+#: includes/class-wcpimh-import.php:1117 includes/class-wcpimh-orders.php:463
 msgid "View"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1119
+#: includes/class-wcpimh-import.php:1120 includes/class-wcpimh-orders.php:466
 msgid "All caught up!"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1170
+#: includes/class-wcpimh-import.php:1171
 msgid "Error:"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1171
+#: includes/class-wcpimh-import.php:1172
 msgid "SKU:"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1172
+#: includes/class-wcpimh-import.php:1173
 msgid "Name:"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1174
+#: includes/class-wcpimh-import.php:1175
 msgid "Edit:"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1179
+#: includes/class-wcpimh-import.php:1180
 msgid "Error in Products Synced in"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1278
+#: includes/class-wcpimh-import.php:1279
 msgid "Import Products from Holded"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1278
+#: includes/class-wcpimh-import.php:1279 includes/class-wcpimh-orders.php:531
 msgid ""
 "After you fillup the API settings, use the button below to import the "
 "products. The importing process may take a while and you need to keep this "
 "page open to complete it."
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1278
+#: includes/class-wcpimh-import.php:1279 includes/class-wcpimh-orders.php:531
 msgid "Start Import"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1278
+#: includes/class-wcpimh-import.php:1279 includes/class-wcpimh-orders.php:531
 msgid "Log"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1283
+#: includes/class-wcpimh-import.php:1284
 msgid "Connecting with Holded and syncing Products ..."
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1432
+#: includes/class-wcpimh-import.php:1420
 msgid "SKU not finded in Simple product. Product not imported "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1442
+#: includes/class-wcpimh-import.php:1430
 msgid "Product type not supported. Product not imported "
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1580
+#: includes/class-wcpimh-import.php:1568
 msgid "All products synced with Holded"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1582
+#: includes/class-wcpimh-import.php:1570
 msgid "Total products:"
 msgstr ""
 
-#: includes/class-wcpimh-import.php:1584
+#: includes/class-wcpimh-import.php:1572
 msgid "Time:"
 msgstr ""
 
-#: includes/class-wcpimh-orders.php:81 includes/class-wcpimh-orders.php:237
+#: includes/class-wcpimh-orders.php:96 includes/class-wcpimh-orders.php:108
 #, php-format
 msgid ""
 "WooCommerce Holded: Plugin is enabled but no api key or secret provided. "
 "Please enter your api key and secret <a href=\"%s\">here</a>."
 msgstr ""
 
-#: includes/class-wcpimh-orders.php:139
-msgid ""
-"Cannot sync with Holded with an empty \"Sync Numbering Series\". Please "
-"enter a \"Sync Numbering Series\" to sync previous orders."
+#: includes/class-wcpimh-orders.php:227
+msgid "Free order not created in Holded. "
 msgstr ""
 
-#: includes/class-wcpimh-orders.php:146
-msgid ""
-"The API key or secret are empty. Enter API key or secret to use "
-"WooCommerce Holded plugin. "
-msgstr ""
-
-#: includes/class-wcpimh-orders.php:153
-msgid ""
-"The \"Numbering Series\" and \"Sync Numbering Series\" cannot be the same. "
-msgstr ""
-
-#: includes/class-wcpimh-orders.php:160
-msgid ""
-"The \"Sync Numbering Series\" already exists in Holded. Enter a new "
-"numbering series to sync previous orders."
-msgstr ""
-
-#: includes/class-wcpimh-orders.php:167
-msgid "Error, could not save settings."
-msgstr ""
-
-#: includes/class-wcpimh-orders.php:179
-msgid "Please save your API key before syncing previous orders."
-msgstr ""
-
-#: includes/class-wcpimh-orders.php:217
-msgid "All previous orders have been synced with your Holded account."
-msgstr ""
-
-#: includes/class-wcpimh-orders.php:220
-msgid "No orders were found."
-msgstr ""
-
-#: includes/class-wcpimh-orders.php:399
+#: includes/class-wcpimh-orders.php:287
 msgid "Paid by cash"
 msgstr ""
 
-#: includes/class-wcpimh-orders.php:402
+#: includes/class-wcpimh-orders.php:290
 msgid "Paid by check"
 msgstr ""
 
-#: includes/class-wcpimh-orders.php:405
+#: includes/class-wcpimh-orders.php:293
 msgid "Paid by paypal"
 msgstr ""
 
-#: includes/class-wcpimh-orders.php:408
+#: includes/class-wcpimh-orders.php:296
 msgid "Paid by bank transfer"
 msgstr ""
 
-#: includes/class-wcpimh-orders.php:411
+#: includes/class-wcpimh-orders.php:299
 msgid "Paid by"
 msgstr ""
 
+#: includes/class-wcpimh-orders.php:342
+#, php-format
+msgid "Order synced correctly with %1$s, ID: %2$s"
+msgstr ""
+
+#: includes/class-wcpimh-orders.php:350 includes/class-wcpimh-orders.php:358
+msgid "num: "
+msgstr ""
+
+#: includes/class-wcpimh-orders.php:439 includes/class-wcpimh-orders.php:443
+#: includes/class-wcpimh-orders.php:493 includes/class-wcpimh-orders.php:495
+msgid "No orders to import"
+msgstr ""
+
+#: includes/class-wcpimh-orders.php:449
+msgid "Order already exported to Holded ID:"
+msgstr ""
+
+#: includes/class-wcpimh-orders.php:452
+msgid "Order Created:"
+msgstr ""
+
+#: includes/class-wcpimh-orders.php:452
+msgid "Order not created:"
+msgstr ""
+
+#: includes/class-wcpimh-orders.php:461
+msgid "orders. "
+msgstr ""
+
+#: includes/class-wcpimh-orders.php:531
+msgid "Sync Orders to Holded"
+msgstr ""
+
+#: includes/class-wcpimh-orders.php:536
+msgid "Connecting with Holded and syncing Orders ..."
+msgstr ""
+
 #. Plugin Name of the plugin/theme
-msgid "Sync Ecommerce Holded"
+msgid "Sync Ecommerce Holded Premium"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
