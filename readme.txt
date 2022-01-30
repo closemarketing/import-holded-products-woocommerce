@@ -40,6 +40,11 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/import-holded-products-woocommerce)
 
 == Changelog ==
+= 1.5 =
+*   Removed Freemius as engine.
+*   Add VAT Info in checkout.
+*   Add PDF generate from Holded.
+
 = 1.4 =
 *   Option to not create document if order is free.
 
