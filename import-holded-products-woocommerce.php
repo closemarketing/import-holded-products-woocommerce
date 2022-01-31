@@ -1,14 +1,13 @@
 <?php
-
 /**
  * Plugin Name: Connect WooCommerce Holded
  * Plugin URI: https://close.technology/wordpress-plugins/integra-tienda-online-woocommerce-holded/
  * Description: Syncs Products and data from Holded to WooCommerce or Easy Digital Downloads.
  * Author: closemarketing
  * Author URI: https://close.technology/
- * Version: 1.4
+ * Version: 1.5
  * WC requires at least: 5.0
- * WC tested up to: 5.9
+ * WC tested up to: 6.1
  *
  * @package WordPress
  * Text Domain: import-holded-products-woocommerce
@@ -22,7 +21,7 @@ define( 'WCPIMH_VERSION', '1.4' );
 define( 'WCPIMH_ECOMMERCE', array( 'woocommerce', 'edd' ) );
 define( 'WCPIMH_TABLE_SYNC', 'wcpimh_product_sync' );
 define( 'WCPIMH_API', 'Holded' );
-define( 'WCPIMH_PURCHASE_URL', 'https://close.techonology/connect-woocommerce-holded/?utm_source=WordPress' );
+define( 'WCPIMH_PURCHASE_URL', 'https://close.technology/connect-woocommerce-holded/?utm_source=WordPress' );
 
 // Loads translation.
 add_action( 'init', 'wcpimh_load_textdomain' );
@@ -35,6 +34,7 @@ function wcpimh_load_textdomain() {
 }
 
 // Includes files.
+require_once dirname( __FILE__ ) . '/includes/class-api-erp.php';
 require_once dirname( __FILE__ ) . '/includes/helpers-functions.php';
 require_once dirname( __FILE__ ) . '/includes/class-wcpimh-admin.php';
 require_once dirname( __FILE__ ) . '/includes/class-wcpimh-import.php';

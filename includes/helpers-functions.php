@@ -50,16 +50,3 @@ function connwoo_is_premium() {
 		false
 	);
 }
-
-function connwoo_loads_api() {
-
-	$api_name = apply_filters(
-		'connwoo_api_name',
-		WCPIMH_API
-	);
-	include_once 'class-api-' . strtolower( $api_name ) . '.php';
-	$crmclassname = 'CONNAPI_' . $api_name;
-	if ( class_exists( $crmclassname ) ) {
-		$connapi = new $crmclassname();
-	}
-}
