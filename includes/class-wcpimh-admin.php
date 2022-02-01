@@ -87,7 +87,7 @@ class WCIMPH_Admin {
 	 */
 	public function create_admin_page() {
 		$this->imh_settings = get_option( 'imhset' );
-		$this->imh_settings_public = get_option( 'imhset_public' );
+		$this->imhset_public = get_option( 'imhset_public' );
 		?>
 
 		<div class="wrap">
@@ -104,7 +104,7 @@ class WCIMPH_Admin {
 				<a href="?page=import_holded&tab=settings" class="nav-tab <?php echo 'settings' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Settings', 'import-holded-products-woocommerce' ); ?></a>
 				<a href="?page=import_holded&tab=public" class="nav-tab <?php echo 'public' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Frontend Settings', 'import-holded-products-woocommerce' ); ?></a>
 				<?php
-				if ( connwoo_is_premium() ) {
+				if ( wcpimh_is_premium() ) {
 					?>
 					<a href="?page=import_holded&tab=license" class="nav-tab <?php echo 'license' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'License', 'import-holded-products-woocommerce' ); ?></a>
 					<?php
@@ -118,7 +118,7 @@ class WCIMPH_Admin {
 			<?php	if ( 'settings' === $active_tab ) { ?>
 				<form method="post" action="options.php">
 					<?php
-						settings_fields( 'connwoo_settings' );
+						settings_fields( 'wcpimh_settings' );
 						do_settings_sections( 'import-holded-admin' );
 						submit_button(
 							__( 'Save settings', 'import-holded-products-woocommerce' ),
@@ -131,10 +131,10 @@ class WCIMPH_Admin {
 			<?php	if ( 'automate' === $active_tab ) { ?>
 				<form method="post" action="options.php">
 					<?php
-					settings_fields( 'connwoo_settings' );
+					settings_fields( 'wcpimh_settings' );
 					do_settings_sections( 'import-holded-automate' );
 
-					if ( connwoo_is_premium() ) {
+					if ( wcpimh_is_premium() ) {
 						submit_button(
 							__( 'Save automate', 'import-holded-products-woocommerce' ),
 							'primary',
@@ -147,7 +147,7 @@ class WCIMPH_Admin {
 			<?php	if ( 'public' === $active_tab ) { ?>
 				<form method="post" action="options.php">
 					<?php
-					settings_fields( 'connwoo_settings_public' );
+					settings_fields( 'wcpimhset_public' );
 					do_settings_sections( 'import-holded-public' );
 					submit_button(
 						__( 'Save public', 'import-holded-products-woocommerce' ),
@@ -172,7 +172,7 @@ class WCIMPH_Admin {
 	public function page_init() {
 
 		register_setting(
-			'connwoo_settings',
+			'wcpimh_settings',
 			'imhset',
 			array( $this, 'sanitize_fields' )
 		);
@@ -225,7 +225,7 @@ class WCIMPH_Admin {
 		);
 
 		$label_cat = __( 'Category separator', 'import-holded-products-woocommerce' );
-		if ( connwoo_is_premium() ) {
+		if ( wcpimh_is_premium() ) {
 			$label_cat .= ' ' . $this->label_premium;
 		}
 		add_settings_field(
@@ -246,7 +246,7 @@ class WCIMPH_Admin {
 
 		$label_filter = __( 'Product price rate for this eCommerce', 'import-holded-products-woocommerce' );
 		$desc_tip = __( 'Copy and paste the ID of the rates for publishing in the web', 'import-holded-products-woocommerce' );
-		if ( ! connwoo_is_premium() ) {
+		if ( ! wcpimh_is_premium() ) {
 			$label_filter .= ' ' . $this->label_premium;
 		}
 		add_settings_field(
@@ -258,7 +258,7 @@ class WCIMPH_Admin {
 		);
 
 		$name_catnp = __( 'Import category only in new products?', 'import-holded-products-woocommerce' );
-		if ( connwoo_is_premium() ) {
+		if ( wcpimh_is_premium() ) {
 			add_settings_field(
 				'wcpimh_catnp',
 				$name_catnp,
@@ -269,7 +269,7 @@ class WCIMPH_Admin {
 		}
 
 		$name_docorder = __( 'Document to create after order completed?', 'import-holded-products-woocommerce' );
-		if ( connwoo_is_premium() ) {
+		if ( wcpimh_is_premium() ) {
 			add_settings_field(
 				'wcpimh_doctype',
 				$name_docorder,
@@ -280,7 +280,7 @@ class WCIMPH_Admin {
 		}
 
 		$name_docorder = __( 'Create document for free Orders?', 'import-holded-products-woocommerce' );
-		if ( connwoo_is_premium() ) {
+		if ( wcpimh_is_premium() ) {
 			add_settings_field(
 				'wcpimh_freeorder',
 				$name_docorder,
@@ -291,22 +291,11 @@ class WCIMPH_Admin {
 		}
 
 		$name_docorder = __( 'Status to sync Orders?', 'import-holded-products-woocommerce' );
-		if ( connwoo_is_premium() ) {
+		if ( wcpimh_is_premium() ) {
 			add_settings_field(
 				'wcpimh_ecstatus',
 				$name_docorder,
 				array( $this, 'wcpimh_ecstatus_callback' ),
-				'import-holded-admin',
-				'import_holded_setting_section'
-			);
-		}
-
-		$name_nif = __( 'Meta key for Billing NIF?', 'sync-ecommerce-neo' );
-		if ( connwoo_is_premium() ) {
-			add_settings_field(
-				'wcpimh_billing_key',
-				$name_nif,
-				array( $this, 'wcpimh_billing_key_callback' ),
 				'import-holded-admin',
 				'import_holded_setting_section'
 			);
@@ -321,9 +310,9 @@ class WCIMPH_Admin {
 			array( $this, 'import_holded_section_automate' ),
 			'import-holded-automate'
 		);
-		if ( connwoo_is_premium() ) {
+		if ( wcpimh_is_premium() ) {
 			$name_sync = __( 'When do you want to sync?', 'import-holded-products-woocommerce' );
-			if ( connwoo_is_premium() ) {
+			if ( wcpimh_is_premium() ) {
 				add_settings_field(
 					'wcpimh_sync',
 					$name_sync,
@@ -334,7 +323,7 @@ class WCIMPH_Admin {
 			}
 
 			$name_sync = __( 'How many products do you want to sync each time?', 'import-holded-products-woocommerce' );
-			if ( connwoo_is_premium() ) {
+			if ( wcpimh_is_premium() ) {
 				add_settings_field(
 					'wcpimh_sync_num',
 					$name_sync,
@@ -343,7 +332,7 @@ class WCIMPH_Admin {
 					'import_holded_setting_automate'
 				);
 			}
-			if ( connwoo_is_premium() ) {
+			if ( wcpimh_is_premium() ) {
 				add_settings_field(
 					'wcpimh_sync_email',
 					__( 'Do you want to receive an email when all products are synced?', 'import-holded-products-woocommerce' ),
@@ -358,62 +347,60 @@ class WCIMPH_Admin {
 		 * ## Public
 		 * --------------------------- */
 
-		register_setting( 'connwoo_settings_public', 'connwoo_settings_public', array( $this, 'sanitize_fields_public' ) );
+		register_setting(
+			'wcpimhset_public',
+			'imhset_public',
+			array(
+				$this,
+				'sanitize_fields_public',
+			)
+		);
 
 		add_settings_section(
-			'connwoo_setting_section',
-			__( 'Settings for Spanish Enhacements in WooCommerce', 'import-holded-products-woocommerce' ),
-			array( $this, 'connwoo_section_info' ),
+			'imhset_pub_setting_section',
+			__( 'Settings for Woocommerce Shop', 'import-holded-products-woocommerce' ),
+			array( $this, 'section_info_public' ),
 			'import-holded-public'
 		);
 
 		add_settings_field(
-			'connwoo_vat_show',
+			'wcpimh_vat_show',
 			__( 'Ask for VAT in Checkout?', 'import-holded-products-woocommerce' ),
-			array( $this, 'connwoo_vat_show_callback' ),
+			array( $this, 'vat_show_callback' ),
 			'import-holded-public',
-			'connwoo_setting_section'
+			'imhset_pub_setting_section'
 		);
 		add_settings_field(
-			'connwoo_vat_mandatory',
+			'wcpimh_vat_mandatory',
 			__( 'VAT info mandatory?', 'import-holded-products-woocommerce' ),
-			array( $this, 'connwoo_vat_mandatory_callback' ),
+			array( $this, 'vat_mandatory_callback' ),
 			'import-holded-public',
-			'connwoo_setting_section'
+			'imhset_pub_setting_section'
 		);
 
 		add_settings_field(
-			'connwoo_company_field',
+			'wcpimh_company_field',
 			__( 'Show Company field?', 'import-holded-products-woocommerce' ),
-			array( $this, 'connwoo_company_field_callback' ),
+			array( $this, 'company_field_callback' ),
 			'import-holded-public',
-			'connwoo_setting_section'
+			'imhset_pub_setting_section'
 		);
 
 		add_settings_field(
-			'connwoo_opt_checkout',
-			__( 'Optimize Checkout?', 'import-holded-products-woocommerce' ),
-			array( $this, 'connwoo_opt_checkout_callback' ),
-			'import-holded-public',
-			'connwoo_setting_section'
-		);
-
-		add_settings_field(
-			'connwoo_remove_free_others',
+			'wcpimh_remove_free_others',
 			__( 'Remove other shipping methods when free is possible?', 'import-holded-products-woocommerce' ),
-			array( $this, 'connwoo_remove_free_others_callback' ),
+			array( $this, 'wcpimh_remove_free_others_callback' ),
 			'import-holded-public',
-			'connwoo_setting_section'
+			'imhset_pub_setting_section'
 		);
 
 		add_settings_field(
-			'connwoo_terms_registration',
+			'wcpimh_terms_registration',
 			__( 'Adds terms and conditions in registration page?', 'import-holded-products-woocommerce' ),
-			array( $this, 'connwoo_terms_registration_callback' ),
+			array( $this, 'wcpimh_terms_registration_callback' ),
 			'import-holded-public',
-			'connwoo_setting_section'
+			'imhset_pub_setting_section'
 		);
-		
 	}
 
 	/**
@@ -422,7 +409,7 @@ class WCIMPH_Admin {
 	 * @return void
 	 */
 	public function page_sync_orders() {
-		if ( connwoo_is_premium() ) {
+		if ( wcpimh_is_premium() ) {
 			echo '<div id="sync-holded-engine-orders"></div>';
 		} else {
 			echo '<h2>' . esc_html__( 'Sync Orders', 'import-holded-products-woocommerce' ) . '</h2>';
@@ -491,9 +478,6 @@ class WCIMPH_Admin {
 				$sanitary_values['wcpimh_ecstatus'] = $input['wcpimh_ecstatus'];
 			}
 
-			if ( isset( $input['wcpimh_billing_key'] ) ) {
-				$sanitary_values['wcpimh_billing_key'] = $input['wcpimh_billing_key'];
-			}
 			// Other tab.
 			$sanitary_values['wcpimh_sync']     = isset( $imh_settings['wcpimh_sync'] ) ? $imh_settings['wcpimh_sync'] : 'no';
 			$sanitary_values['wcpimh_sync_num'] = isset( $imh_settings['wcpimh_sync_num'] ) ? $imh_settings['wcpimh_sync_num'] : 5;
@@ -523,7 +507,6 @@ class WCIMPH_Admin {
 			$sanitary_values['wcpimh_doctype']   = isset( $imh_settings['wcpimh_doctype'] ) ? $imh_settings['wcpimh_doctype'] : 'invoice';
 			$sanitary_values['wcpimh_freeorder']   = isset( $imh_settings['wcpimh_freeorder'] ) ? $imh_settings['wcpimh_freeorder'] : 'no';
 			$sanitary_values['wcpimh_ecstatus']   = isset( $imh_settings['wcpimh_ecstatus'] ) ? $imh_settings['wcpimh_ecstatus'] : 'all';
-			$sanitary_values['wcpimh_billing_key']   = isset( $imh_settings['wcpimh_billing_key'] ) ? $imh_settings['wcpimh_billing_key'] : 'invoice';
 		}
 
 		return $sanitary_values;
@@ -558,7 +541,7 @@ class WCIMPH_Admin {
 	 * @return void
 	 */
 	public function import_holded_section_automate() {
-		if ( connwoo_is_premium() ) {
+		if ( wcpimh_is_premium() ) {
 			esc_html_e( 'Make your settings to automate the sync.', 'import-holded-products-woocommerce' );
 		} else {
 			esc_html_e( 'Section only for Premium version', 'import-holded-products-woocommerce' );
@@ -575,7 +558,7 @@ class WCIMPH_Admin {
 	public function import_holded_section_info() {
 		echo sprintf( __( 'Put the connection API key settings in order to connect and sync products. You can go here <a href = "%s" target = "_blank">App Holded API</a>. ', 'import-holded-products-woocommerce' ), 'https://app.holded.com/api' );
 
-		if ( ! connwoo_is_premium() ) {
+		if ( ! wcpimh_is_premium() ) {
 			echo $this->show_get_premium();
 		}
 	}
@@ -735,18 +718,6 @@ class WCIMPH_Admin {
 	}
 
 	/**
-	 * Callback Billing nif key
-	 *
-	 * @return void
-	 */
-	public function wcpimh_billing_key_callback() {
-		printf(
-			'<input class="regular-text" type="text" name="imhset[wcpimh_billing_key]" id="wcpimh_billing_key" value="%s">',
-			isset( $this->imh_settings[ 'wcpimh_billing_key' ] ) ? esc_attr( $this->imh_settings[ 'wcpimh_billing_key' ] ) : '_billing_vat'
-		);
-	}
-
-	/**
 	 * Callback sync field.
 	 *
 	 * @return void
@@ -850,12 +821,8 @@ class WCIMPH_Admin {
 	 *
 	 * @return void
 	 */
-	public function connwoo_section_info() {
-		echo sprintf(
-			/* translators: %s: url admin for addons */
-			__( 'Please select the following settings in order customize your eCommerce. Don\'t miss the <a href="%s">Addons</a> to improve the functionality. ', 'import-holded-products-woocommerce' ),
-			get_admin_url() . 'admin.php?page=wces-addons' // phpcs:ignore
-		);
+	public function section_info_public() {
+		esc_html_e( 'Please select the following settings in order customize your eCommerce. ', 'import-holded-products-woocommerce' );
 	}
 
 	/**
@@ -863,15 +830,15 @@ class WCIMPH_Admin {
 	 *
 	 * @return void
 	 */
-	public function connwoo_vat_show_callback() {
+	public function vat_show_callback() {
 		?>
-		<select name="imh_settings_public[vat_show]" id="vat_show">
+		<select name="imhset_public[vat_show]" id="vat_show">
 			<?php 
-			$selected = ( isset( $this->imh_settings_public['vat_show'] ) && $this->imh_settings_public['vat_show'] === 'no' ? 'selected' : '' );
+			$selected = ( isset( $this->imhset_public['vat_show'] ) && $this->imhset_public['vat_show'] === 'no' ? 'selected' : '' );
 			?>
 			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'import-holded-products-woocommerce' ); ?></option>
 			<?php 
-			$selected = ( isset( $this->imh_settings_public['vat_show'] ) && $this->imh_settings_public['vat_show'] === 'yes' ? 'selected' : '' );
+			$selected = ( isset( $this->imhset_public['vat_show'] ) && $this->imhset_public['vat_show'] === 'yes' ? 'selected' : '' );
 			?>
 			<option value="yes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Yes', 'import-holded-products-woocommerce' ); ?></option>
 		</select>
@@ -883,16 +850,16 @@ class WCIMPH_Admin {
 	 *
 	 * @return void
 	 */
-	public function connwoo_vat_mandatory_callback() {
-		$connwoo_vat_mandatory = get_option( 'connwoo_vat_mandatory' );
+	public function vat_mandatory_callback() {
+		$wcpimh_vat_mandatory = get_option( 'wcpimh_vat_mandatory' );
 		?>
-		<select name="imh_settings_public[vat_mandatory]" id="vat_mandatory">
+		<select name="imhset_public[vat_mandatory]" id="vat_mandatory">
 			<?php 
-			$selected = ( isset( $this->imh_settings_public['vat_mandatory'] ) && $this->imh_settings_public['vat_mandatory'] === 'no' ? 'selected' : '' );
+			$selected = ( isset( $this->imhset_public['vat_mandatory'] ) && $this->imhset_public['vat_mandatory'] === 'no' ? 'selected' : '' );
 			?>
 			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'import-holded-products-woocommerce' ); ?></option>
 			<?php 
-			$selected = ( isset( $this->imh_settings_public['vat_mandatory'] ) && $this->imh_settings_public['vat_mandatory'] === 'yes' ? 'selected' : '' );
+			$selected = ( isset( $this->imhset_public['vat_mandatory'] ) && $this->imhset_public['vat_mandatory'] === 'yes' ? 'selected' : '' );
 			?>
 			<option value="yes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Yes', 'import-holded-products-woocommerce' ); ?></option>
 		</select>
@@ -904,35 +871,15 @@ class WCIMPH_Admin {
 	 *
 	 * @return void
 	 */
-	public function connwoo_company_field_callback() {
+	public function company_field_callback() {
 		?>
-		<select name="imh_settings_public[company_field]" id="company_field">
+		<select name="imhset_public[company_field]" id="company_field">
 			<?php 
-			$selected = ( isset( $this->imh_settings_public['company_field'] ) && $this->imh_settings_public['company_field'] === 'no' ? 'selected' : '' );
+			$selected = ( isset( $this->imhset_public['company_field'] ) && $this->imhset_public['company_field'] === 'no' ? 'selected' : '' );
 			?>
 			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'import-holded-products-woocommerce' ); ?></option>
 			<?php 
-			$selected = ( isset( $this->imh_settings_public['company_field'] ) && $this->imh_settings_public['company_field'] === 'yes' ? 'selected' : '' );
-			?>
-			<option value="yes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Yes', 'import-holded-products-woocommerce' ); ?></option>
-		</select>
-		<?php
-	}
-
-	/**
-	 * Vat show company field
-	 *
-	 * @return void
-	 */
-	public function connwoo_opt_checkout_callback() {
-		?>
-		<select name="imh_settings_public[opt_checkout]" id="opt_checkout">
-			<?php 
-			$selected = ( isset( $this->imh_settings_public['opt_checkout'] ) && $this->imh_settings_public['opt_checkout'] === 'no' ? 'selected' : '' );
-			?>
-			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'import-holded-products-woocommerce' ); ?></option>
-			<?php 
-			$selected = ( isset( $this->imh_settings_public['opt_checkout'] ) && $this->imh_settings_public['opt_checkout'] === 'yes' ? 'selected' : '' );
+			$selected = ( isset( $this->imhset_public['company_field'] ) && $this->imhset_public['company_field'] === 'yes' ? 'selected' : '' );
 			?>
 			<option value="yes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Yes', 'import-holded-products-woocommerce' ); ?></option>
 		</select>
@@ -944,15 +891,15 @@ class WCIMPH_Admin {
 	 *
 	 * @return void
 	 */
-	public function connwoo_terms_registration_callback() {
+	public function wcpimh_terms_registration_callback() {
 		?>
-		<select name="imh_settings_public[terms_registration]" id="terms_registration">
+		<select name="imhset_public[terms_registration]" id="terms_registration">
 			<?php 
-			$selected = ( isset( $this->imh_settings_public['terms_registration'] ) && $this->imh_settings_public['terms_registration'] === 'no' ? 'selected' : '' );
+			$selected = ( isset( $this->imhset_public['terms_registration'] ) && $this->imhset_public['terms_registration'] === 'no' ? 'selected' : '' );
 			?>
 			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'import-holded-products-woocommerce' ); ?></option>
 			<?php 
-			$selected = ( isset( $this->imh_settings_public['terms_registration'] ) && $this->imh_settings_public['terms_registration'] === 'yes' ? 'selected' : '' );
+			$selected = ( isset( $this->imhset_public['terms_registration'] ) && $this->imhset_public['terms_registration'] === 'yes' ? 'selected' : '' );
 			?>
 			<option value="yes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Yes', 'import-holded-products-woocommerce' ); ?></option>
 		</select>
@@ -964,15 +911,15 @@ class WCIMPH_Admin {
 	 *
 	 * @return void
 	 */
-	public function connwoo_remove_free_others_callback() {
+	public function wcpimh_remove_free_others_callback() {
 		?>
-		<select name="imh_settings_public[remove_free]" id="remove_free">
+		<select name="imhset_public[remove_free]" id="remove_free">
 			<?php 
-			$selected = ( isset( $this->imh_settings_public['remove_free'] ) && $this->imh_settings_public['remove_free'] === 'no' ? 'selected' : '' );
+			$selected = ( isset( $this->imhset_public['remove_free'] ) && $this->imhset_public['remove_free'] === 'no' ? 'selected' : '' );
 			?>
 			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'import-holded-products-woocommerce' ); ?></option>
 			<?php 
-			$selected = ( isset( $this->imh_settings_public['remove_free'] ) && $this->imh_settings_public['remove_free'] === 'yes' ? 'selected' : '' );
+			$selected = ( isset( $this->imhset_public['remove_free'] ) && $this->imhset_public['remove_free'] === 'yes' ? 'selected' : '' );
 			?>
 			<option value="yes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Yes', 'import-holded-products-woocommerce' ); ?></option>
 		</select>
@@ -1008,7 +955,7 @@ class WCIMPH_Admin {
 				width: 270px;
 			}';
 		// Not premium version.
-		if ( ! connwoo_is_premium() ) {
+		if ( ! wcpimh_is_premium() ) {
 			echo '.wp-admin.wcpimh-plugin #wcpimh_catsep, .wp-admin.wcpimh-plugin #wcpimh_filter, .wp-admin.wcpimh-plugin #wcpimh_sync  {
 				pointer-events:none;
 			}';

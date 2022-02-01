@@ -44,7 +44,7 @@ function sync_ecommerce_check_can_sync() {
  *
  * @return array
  */
-function connwoo_is_premium() {
+function wcpimh_is_premium() {
 	return apply_filters(
 		'connwoo_is_premium',
 		false
