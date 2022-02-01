@@ -102,6 +102,72 @@ class CONNAPI_ERP {
 		return $body_response;
 	}
 
+	/**
+	 * Create Order to Holded
+	 *
+	 * @param string $order_data Data order.
+	 * @return array Array of products imported via API.
+	 */
+	private function create_order( $order_data ) {
+		if ( ! isset( $this->sync_settings['wcpimh_api'] ) ) {
+			echo $this->get_message( sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'holded-for-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' ) );
+			return false;
+		}
+		$apikey  = isset( $this->sync_settings['wcpimh_api'] ) ? $this->sync_settings['wcpimh_api'] : '';
+		$doctype = isset( $this->sync_settings['wcpimh_doctype'] ) ? $this->sync_settings['wcpimh_doctype'] : 'nosync';
+		if ( 'nosync' === $doctype ) {
+			return false;
+		}
+		$args   = array(
+			'headers' => array(
+				'key' => $apikey,
+			),
+			'body'    => $order_data,
+			'timeout' => 10,
+		);
+
+		$response      = wp_remote_post( 'https://api.holded.com/api/invoicing/v1/documents/' . $doctype, $args );
+		$body          = wp_remote_retrieve_body( $response );
+		$body_response = json_decode( $body, true );
+
+		if ( isset( $body_response['errors'] ) ) {
+			error_admin_message( 'ERROR', $body_response['errors'][0]['message'] . ' <br/> Api Call: /' );
+			return false;
+		}
+
+		return $body_response;
+	}
+
+	public function get_image_product() {
+		$imh_settings = get_option( 'imhset' );
+		$apikey       = $imh_settings['wcpimh_api'];
+		$args         = array(
+			'headers' => array(
+				'key' => $apikey,
+			),
+			'timeout' => 10,
+		);
+
+		$response   = wp_remote_get( 'https://api.holded.com/api/invoicing/v1/products/' . $holded_id . '/image/', $args );
+		$body       = wp_remote_retrieve_body( $response );
+		$body_array = json_decode( $body, true );
+
+		if ( isset( $body_array['status'] ) && 0 == $body_array['status'] ) {
+			return false;
+		}
+
+		$headers = (array) $response['headers'];
+		foreach ( $headers as $header ) {
+			$content_type = $header['content-type'];
+			break;
+		}
+		$extension = explode( '/', $content_type, 2 )[1];
+		$filename  = get_the_title( $product_id ) . '.' . $extension;
+		$upload    = wp_upload_bits( $filename, null, $body );
+
+		return $upload;
+	}
+
 }
 
 $connapi_erp = new CONNAPI_ERP();
