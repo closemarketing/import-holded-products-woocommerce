@@ -36,6 +36,7 @@ function wcpimh_load_textdomain() {
 // Includes files.
 require_once dirname( __FILE__ ) . '/includes/class-api-erp.php';
 require_once dirname( __FILE__ ) . '/includes/helpers-functions.php';
+require_once dirname( __FILE__ ) . '/includes/class-public.php';
 require_once dirname( __FILE__ ) . '/includes/class-wcpimh-admin.php';
 require_once dirname( __FILE__ ) . '/includes/class-wcpimh-import.php';
 require_once dirname( __FILE__ ) . '/includes/update.php';
