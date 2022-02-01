@@ -66,7 +66,7 @@ class WCPIMH_Import {
 		global $wpdb;
 		$this->table_sync = $wpdb->prefix . WCPIMH_TABLE_SYNC;
 
-		add_action( 'admin_print_footer_scripts', array( $this, 'wcpimh_admin_print_footer_scripts' ), 11, 1 );
+		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 11, 1 );
 		add_action( 'wp_ajax_wcpimh_import_products', array( $this, 'wcpimh_import_products' ) );
 
 		// Admin Styles.
@@ -502,12 +502,13 @@ class WCPIMH_Import {
 	 * @return void
 	 */
 	public function wcpimh_import_method_products() {
+		global $connapi_erp;
 		extract( $_REQUEST );
 		$not_sapi_cli = substr( php_sapi_name(), 0, 3 ) != 'cli' ? true : false;
 		$doing_ajax   = defined( 'DOING_AJAX' ) && DOING_AJAX;
 		$imh_settings = get_option( 'imhset' );
 		$apikey       = $imh_settings['wcpimh_api'];
-		$prod_status    = ( isset( $imh_settings['wcpimh_prodst'] ) && $imh_settings['wcpimh_prodst'] ) ? $imh_settings['wcpimh_prodst'] : 'draft';
+		$prod_status  = ( isset( $imh_settings['wcpimh_prodst'] ) && $imh_settings['wcpimh_prodst'] ) ? $imh_settings['wcpimh_prodst'] : 'draft';
 
 		if ( $this->is_woocommerce_active ) {
 			$post_type = 'product';
@@ -538,7 +539,7 @@ class WCPIMH_Import {
 
 			while ( $next ) {
 				$this->write_log( 'Page: ' . $page );
-				$output   = $this->get_products( null, $page );
+				$output   = $connapi_erp->get_products( null, $page );
 				$products = array_merge( $products, $output );
 
 				if ( count( $output ) === MAX_LIMIT_HOLDED_API ) {
@@ -848,7 +849,7 @@ class WCPIMH_Import {
 	 *
 	 * @return void
 	 */
-	public function wcpimh_admin_print_footer_scripts() {
+	public function admin_print_footer_scripts() {
 		$screen  = get_current_screen();
 		$get_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'sync';
 
