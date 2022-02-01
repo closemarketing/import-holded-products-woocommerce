@@ -105,7 +105,12 @@ class WCIMPH_Admin {
 				<?php
 				if ( connwoo_is_premium() ) {
 					?>
-					<a href="?page=import_holded&tab=license" class="nav-tab <?php echo 'license' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'License', 'import-holded-products-woocommerce' ); ?></a>
+					<a href="?page=import_holded&tab=license" class="nav-tab <?php echo 'license' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'License activation', 'import-holded-products-woocommerce' ); ?></a>
+					<?php
+				}
+				if ( connwoo_is_premium() ) {
+					?>
+					<a href="?page=import_holded&tab=licensedeac" class="nav-tab <?php echo 'licensedeac' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'License deactivation', 'import-holded-products-woocommerce' ); ?></a>
 					<?php
 				}
 				?>
@@ -155,10 +160,20 @@ class WCIMPH_Admin {
 					);
 					?>
 				</form>
-			<?php } ?>
-			<?php	if ( 'orders' === $active_tab ) {
+			<?php }
+
+			if ( 'orders' === $active_tab ) {
 				$this->page_sync_orders();
-			} ?>
+			}
+
+			if ( 'license' === $active_tab ) {
+				do_action( 'connect_woocommerce_options_license' );
+			}
+
+			if ( 'licensedeac' === $active_tab ) {
+				do_action( 'connect_woocommerce_options_license_deactivate' );
+			}
+			?>
 		</div>
 		<?php
 	}
