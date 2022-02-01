@@ -272,9 +272,9 @@ class WCPIMH_Import {
 		// Start.
 		if ( 'simple' === $type ) {
 			$product = new \WC_Product( $product_id );
-		} elseif ( 'variable' === $type && cmk_fs()->is__premium_only() ) {
+		} elseif ( 'variable' === $type && connwoo_is_premium() && class_exists( 'CONNWOO_Import_Premium' ) ) {
 			$product = new \WC_Product_Variable( $product_id );
-		} elseif ( 'pack' === $type && cmk_fs()->is__premium_only() ) {
+		} elseif ( 'pack' === $type && connwoo_is_premium() && class_exists( 'CONNWOO_Import_Premium' ) ) {
 			$product = new \WC_Product( $product_id );
 		}
 		// Common and default properties.
@@ -445,9 +445,7 @@ class WCPIMH_Import {
 		}
 		if ( $post_id && $item['sku'] && 'simple' == $item['kind'] ) {
 
-			if ( $this->is_woocommerce_active ) {
-				wp_set_object_terms( $post_id, 'simple', 'product_type' );
-			}
+			wp_set_object_terms( $post_id, 'simple', 'product_type' );
 
 			// Update meta for product.
 			$this->sync_product( $item, $post_id, 'simple' );
@@ -559,7 +557,7 @@ class WCPIMH_Import {
 
 					if ( ! $is_filtered_product && $item['sku'] && 'simple' === $item['kind'] ) {
 						$this->sync_product_simple( $item );
-					} elseif ( ! $is_filtered_product && 'variants' === $item['kind'] && connwoo_is_premium() && class_exists( 'CONNWOO_Import_Premium' ) && $this->is_woocommerce_active ) {
+					} elseif ( ! $is_filtered_product && 'variants' === $item['kind'] && connwoo_is_premium() && class_exists( 'CONNWOO_Import_Premium' ) ) {
 						// Variable product.
 						// Check if any variants exists.
 						$post_parent = 0;
@@ -590,7 +588,7 @@ class WCPIMH_Import {
 							}
 							$this->ajax_msg .= $item['name'] . '. SKU: ' . $item['sku'] . '(' . $item['kind'] . ') <br/>';
 						}
-					} elseif ( ! $is_filtered_product && 'pack' === $item['kind'] && connwoo_is_premium() && class_exists( 'CONNWOO_Import_Premium' ) && $this->is_woocommerce_active && $plugin_grouped_prod_active ) {
+					} elseif ( ! $is_filtered_product && 'pack' === $item['kind'] && connwoo_is_premium() && class_exists( 'CONNWOO_Import_Premium' ) && $plugin_grouped_prod_active ) {
 						$post_id = $this->find_product( $item['sku'] );
 
 						if ( ! $post_id ) {
@@ -631,7 +629,7 @@ class WCPIMH_Import {
 							$this->ajax_msg .= $msg_product_synced;
 						}
 						$this->ajax_msg .= $item['name'] . '. SKU: ' . $item['sku'] . ' (' . $item['kind'] . ')';
-					} elseif ( ! $is_filtered_product && 'pack' === $item['kind'] && connwoo_is_premium() && class_exists( 'CONNWOO_Import_Premium' ) && $this->is_woocommerce_active && ! $plugin_grouped_prod_active ) {
+					} elseif ( ! $is_filtered_product && 'pack' === $item['kind'] && connwoo_is_premium() && class_exists( 'CONNWOO_Import_Premium' ) && ! $plugin_grouped_prod_active ) {
 						$plugin_url = 
 						$this->ajax_msg .= '<span class="warning">' . __( 'Product needs Plugin to import: ', 'import-holded-products-woocommerce' );
 						$this->ajax_msg .= '<a href="https://wordpress.org/plugins/woo-product-bundle/" target="_blank">WPC Product Bundles for WooCommerce</a> ';
