@@ -83,8 +83,7 @@ class WCPIMH_Import {
 		if ( $sync_period && 'no' !== $sync_period ) {
 			add_action( $sync_period, array( $this, 'cron_sync_products' ) );
 		}
-		$this->is_woocommerce_active = imhwc_is_active_ecommerce( 'woocommerce' ) ? true : false;
-		$this->is_edd_active         = imhwc_is_active_ecommerce( 'edd' ) ? true : false;
+		
 	}
 
 	/**
@@ -210,47 +209,6 @@ class WCPIMH_Import {
 	}
 
 	/**
-	 * Create global attributes in WooCommerce
-	 *
-	 * @param array   $attributes Attributes array.
-	 * @param boolean $for_variation Is for variation.
-	 * @return array
-	 */
-	private function make_attributes( $attributes, $for_variation = true ) {
-		$position = 0;
-		foreach ( $attributes as $attr_name => $attr_values ) {
-			$attribute = new \WC_Product_Attribute();
-			$attribute->set_id( 0 );
-			$attribute->set_position( $position );
-			$attribute->set_visible( true );
-			$attribute->set_variation( $for_variation );
-
-			$attribute_labels = wp_list_pluck( wc_get_attribute_taxonomies(), 'attribute_label', 'attribute_name' );
-			$attribute_name   = array_search( $attr_name, $attribute_labels, true );
-
-			if ( ! $attribute_name ) {
-				$attribute_name = wc_sanitize_taxonomy_name( $attr_name );
-			}
-
-			$attribute_id = wc_attribute_taxonomy_id_by_name( $attribute_name );
-
-			if ( ! $attribute_id ) {
-				$attribute_id = self::create_global_attribute( $attr_name );
-			}
-			$slug          = wc_sanitize_taxonomy_name( $attr_name );
-			$taxonomy_name = wc_attribute_taxonomy_name( $slug );
-
-			$attribute->set_name( $taxonomy_name );
-			$attribute->set_id( $attribute_id );
-			$attribute->set_options( $attr_values );
-
-			$attributes_return[] = $attribute;
-			$position++;
-		}
-		return $attributes_return;
-	}
-
-	/**
 	 * Finds simple and variation item in WooCommerce.
 	 *
 	 * @param string $sku SKU of product.
@@ -258,13 +216,8 @@ class WCPIMH_Import {
 	 */
 	private function find_product( $sku ) {
 		global $wpdb;
-		if ( $this->is_woocommerce_active ) {
-			$post_type = 'product';
-			$meta_key  = '_sku';
-		} elseif ( $this->is_edd_active ) {
-			$post_type = 'download';
-			$meta_key  = 'edd_sku';
-		}
+		$post_type = 'product';
+		$meta_key  = '_sku';
 		$result_query = $wpdb->get_var( $wpdb->prepare( "SELECT P.ID FROM $wpdb->posts AS P LEFT JOIN $wpdb->postmeta AS PM ON PM.post_id = P.ID WHERE P.post_type = '$post_type' AND PM.meta_key='$meta_key' AND PM.meta_value=%s AND P.post_status != 'trash' LIMIT 1", $sku ) );
 
 		return $result_query;
@@ -378,7 +331,34 @@ class WCPIMH_Import {
 		switch ( $type ) {
 			case 'simple';
 			case 'grouped';
-				$connwoo_premium->sync_product_variable( $product, $item, $is_new_product, $rate_id );
+				// Values for simple products.
+				$product_props['sku'] = $item['sku'];
+				// Check if the product can be sold.
+				if ( 'no' === $import_stock && $item['price'] > 0 ) {
+					$product_props['stock_status'] = 'instock';
+					$product_props['catalog_visibility'] = 'visible';
+					wp_remove_object_terms( $product_id, 'exclude-from-catalog', 'product_visibility' );
+					wp_remove_object_terms( $product_id, 'exclude-from-search', 'product_visibility' );
+				} elseif ( 'yes' === $import_stock && $item['stock'] > 0 ) {
+					$product_props['manage_stock'] = true;
+					$product_props['stock_quantity'] = $item['stock'];
+					$product_props['stock_status'] = 'instock';
+					$product_props['catalog_visibility'] = 'visible';
+					wp_remove_object_terms( $product_id, 'exclude-from-catalog', 'product_visibility' );
+					wp_remove_object_terms( $product_id, 'exclude-from-search', 'product_visibility' );
+				} elseif ( 'yes' === $import_stock && 0 === $item['stock'] ) {
+					$product_props['manage_stock'] = true;
+					$product_props['catalog_visibility'] = 'hidden';
+					$product_props['stock_quantity'] = 0;
+					$product_props['stock_status'] = 'outofstock';
+					wp_set_object_terms( $product_id, array( 'exclude-from-catalog', 'exclude-from-search' ), 'product_visibility' );
+				} else {
+					$product_props['manage_stock'] = true;
+					$product_props['catalog_visibility'] = 'hidden';
+					$product_props['stock_quantity'] = $item['stock'];
+					$product_props['stock_status'] = 'outofstock';
+					wp_set_object_terms( $product_id, array( 'exclude-from-catalog', 'exclude-from-search' ), 'product_visibility' );
+				}
 				break;
 			case 'variable':
 				if ( connwoo_is_premium() && class_exists( 'CONNWOO_Import_Premium' ) ) {
@@ -390,7 +370,7 @@ class WCPIMH_Import {
 					$connwoo_premium->sync_product_pack( $product, $item, $pack_items );
 				}
 				break;
-	 	}
+		}
 
 		if ( connwoo_is_premium() && class_exists( 'CONNWOO_Import_Premium' ) ) {
 			$categories_ids = $connwoo_premium->get_categories_ids( $imh_settings, $is_new_product );
@@ -429,20 +409,15 @@ class WCPIMH_Import {
 	/**
 	 * Creates the post for the product from item
 	 *
-	 * @param [type] $item
+	 * @param [type] $item Item product from api.
 	 * @return void
 	 */
 	private function create_product_post( $item ) {
 		$imh_settings = get_option( 'imhset' );
 		$prod_status  = ( isset( $imh_settings['wcpimh_prodst'] ) && $imh_settings['wcpimh_prodst'] ) ? $imh_settings['wcpimh_prodst'] : 'draft';
 
-		if ( $this->is_woocommerce_active ) {
-			$post_type = 'product';
-			$sku_key   = '_sku';
-		} elseif ( $this->is_edd_active ) {
-			$post_type = 'download';
-			$sku_key   = 'edd_sku';
-		}
+		$post_type = 'product';
+		$sku_key   = '_sku';
 		$post_arg = array(
 			'post_title'   => ( $item['name'] ) ? $item['name'] : '',
 			'post_content' => ( $item['desc'] ) ? $item['desc'] : '',
@@ -510,13 +485,8 @@ class WCPIMH_Import {
 		$apikey       = $imh_settings['wcpimh_api'];
 		$prod_status  = ( isset( $imh_settings['wcpimh_prodst'] ) && $imh_settings['wcpimh_prodst'] ) ? $imh_settings['wcpimh_prodst'] : 'draft';
 
-		if ( $this->is_woocommerce_active ) {
-			$post_type = 'product';
-			$sku_key   = '_sku';
-		} elseif ( $this->is_edd_active ) {
-			$post_type = 'download';
-			$sku_key   = 'edd_sku';
-		}
+		$post_type = 'product';
+		$sku_key   = '_sku';
 
 		if ( in_array( 'woo-product-bundle/wpc-product-bundles.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 			$plugin_grouped_prod_active = true;
@@ -853,7 +823,7 @@ class WCPIMH_Import {
 		$screen  = get_current_screen();
 		$get_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'sync';
 
-		if ( 'toplevel_page_import_holded' === $screen->base && 'sync' === $get_tab ) {
+		if ( 'woocommerce_page_import_holded' === $screen->base && 'sync' === $get_tab ) {
 		?>
 		<style>
 			.spinner{ float: none; }

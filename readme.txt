@@ -42,9 +42,10 @@ WordPress installation and then activate the Plugin from Plugins page.
 == Changelog ==
 = 1.5 =
 *   Removed Freemius as engine.
+*   Removed Support to Easy Digital Downloads.
 *   Add Tags as list (separated with commas).
 *   Add VAT Info in checkout.
-*   Add PDF generate from Holded.
+*   Premium: Add PDF generated from Holded.
 
 = 1.4 =
 *   Option to not create document if order is free.

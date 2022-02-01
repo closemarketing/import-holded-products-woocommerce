@@ -69,14 +69,13 @@ class WCIMPH_Admin {
 	 */
 	public function add_plugin_page() {
 
-		add_menu_page(
+		add_submenu_page(
+			'woocommerce',
 			__( 'Connect WooCommerce Holded', 'import-holded-products-woocommerce' ),
 			__( 'Connect Holded', 'import-holded-products-woocommerce' ),
 			'manage_options',
 			'import_holded',
 			array( $this, 'create_admin_page' ),
-			'dashicons-index-card',
-			99
 		);
 	}
 
@@ -104,7 +103,7 @@ class WCIMPH_Admin {
 				<a href="?page=import_holded&tab=settings" class="nav-tab <?php echo 'settings' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Settings', 'import-holded-products-woocommerce' ); ?></a>
 				<a href="?page=import_holded&tab=public" class="nav-tab <?php echo 'public' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'Frontend Settings', 'import-holded-products-woocommerce' ); ?></a>
 				<?php
-				if ( wcpimh_is_premium() ) {
+				if ( connwoo_is_premium() ) {
 					?>
 					<a href="?page=import_holded&tab=license" class="nav-tab <?php echo 'license' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'License', 'import-holded-products-woocommerce' ); ?></a>
 					<?php
@@ -134,7 +133,7 @@ class WCIMPH_Admin {
 					settings_fields( 'wcpimh_settings' );
 					do_settings_sections( 'import-holded-automate' );
 
-					if ( wcpimh_is_premium() ) {
+					if ( connwoo_is_premium() ) {
 						submit_button(
 							__( 'Save automate', 'import-holded-products-woocommerce' ),
 							'primary',
@@ -225,7 +224,7 @@ class WCIMPH_Admin {
 		);
 
 		$label_cat = __( 'Category separator', 'import-holded-products-woocommerce' );
-		if ( wcpimh_is_premium() ) {
+		if ( ! connwoo_is_premium() ) {
 			$label_cat .= ' ' . $this->label_premium;
 		}
 		add_settings_field(
@@ -246,7 +245,7 @@ class WCIMPH_Admin {
 
 		$label_filter = __( 'Product price rate for this eCommerce', 'import-holded-products-woocommerce' );
 		$desc_tip = __( 'Copy and paste the ID of the rates for publishing in the web', 'import-holded-products-woocommerce' );
-		if ( ! wcpimh_is_premium() ) {
+		if ( ! connwoo_is_premium() ) {
 			$label_filter .= ' ' . $this->label_premium;
 		}
 		add_settings_field(
@@ -258,7 +257,7 @@ class WCIMPH_Admin {
 		);
 
 		$name_catnp = __( 'Import category only in new products?', 'import-holded-products-woocommerce' );
-		if ( wcpimh_is_premium() ) {
+		if ( connwoo_is_premium() ) {
 			add_settings_field(
 				'wcpimh_catnp',
 				$name_catnp,
@@ -269,7 +268,7 @@ class WCIMPH_Admin {
 		}
 
 		$name_docorder = __( 'Document to create after order completed?', 'import-holded-products-woocommerce' );
-		if ( wcpimh_is_premium() ) {
+		if ( connwoo_is_premium() ) {
 			add_settings_field(
 				'wcpimh_doctype',
 				$name_docorder,
@@ -280,7 +279,7 @@ class WCIMPH_Admin {
 		}
 
 		$name_docorder = __( 'Create document for free Orders?', 'import-holded-products-woocommerce' );
-		if ( wcpimh_is_premium() ) {
+		if ( connwoo_is_premium() ) {
 			add_settings_field(
 				'wcpimh_freeorder',
 				$name_docorder,
@@ -291,11 +290,22 @@ class WCIMPH_Admin {
 		}
 
 		$name_docorder = __( 'Status to sync Orders?', 'import-holded-products-woocommerce' );
-		if ( wcpimh_is_premium() ) {
+		if ( connwoo_is_premium() ) {
 			add_settings_field(
 				'wcpimh_ecstatus',
 				$name_docorder,
 				array( $this, 'wcpimh_ecstatus_callback' ),
+				'import-holded-admin',
+				'import_holded_setting_section'
+			);
+		}
+
+		$name_nif = __( 'ID design for document?', 'import-holded-products-woocommerce' );
+		if ( connwoo_is_premium() ) {
+			add_settings_field(
+				'wcpmih_design_id',
+				$name_nif,
+				array( $this, 'wcpmih_design_id_callback' ),
 				'import-holded-admin',
 				'import_holded_setting_section'
 			);
@@ -310,9 +320,9 @@ class WCIMPH_Admin {
 			array( $this, 'import_holded_section_automate' ),
 			'import-holded-automate'
 		);
-		if ( wcpimh_is_premium() ) {
+		if ( connwoo_is_premium() ) {
 			$name_sync = __( 'When do you want to sync?', 'import-holded-products-woocommerce' );
-			if ( wcpimh_is_premium() ) {
+			if ( connwoo_is_premium() ) {
 				add_settings_field(
 					'wcpimh_sync',
 					$name_sync,
@@ -323,7 +333,7 @@ class WCIMPH_Admin {
 			}
 
 			$name_sync = __( 'How many products do you want to sync each time?', 'import-holded-products-woocommerce' );
-			if ( wcpimh_is_premium() ) {
+			if ( connwoo_is_premium() ) {
 				add_settings_field(
 					'wcpimh_sync_num',
 					$name_sync,
@@ -332,7 +342,7 @@ class WCIMPH_Admin {
 					'import_holded_setting_automate'
 				);
 			}
-			if ( wcpimh_is_premium() ) {
+			if ( connwoo_is_premium() ) {
 				add_settings_field(
 					'wcpimh_sync_email',
 					__( 'Do you want to receive an email when all products are synced?', 'import-holded-products-woocommerce' ),
@@ -409,7 +419,7 @@ class WCIMPH_Admin {
 	 * @return void
 	 */
 	public function page_sync_orders() {
-		if ( wcpimh_is_premium() ) {
+		if ( connwoo_is_premium() ) {
 			echo '<div id="sync-holded-engine-orders"></div>';
 		} else {
 			echo '<h2>' . esc_html__( 'Sync Orders', 'import-holded-products-woocommerce' ) . '</h2>';
@@ -478,6 +488,9 @@ class WCIMPH_Admin {
 				$sanitary_values['wcpimh_ecstatus'] = $input['wcpimh_ecstatus'];
 			}
 
+			if ( isset( $input['wcpmih_design_id'] ) ) {
+				$sanitary_values['wcpmih_design_id'] = $input['wcpmih_design_id'];
+			}
 			// Other tab.
 			$sanitary_values['wcpimh_sync']     = isset( $imh_settings['wcpimh_sync'] ) ? $imh_settings['wcpimh_sync'] : 'no';
 			$sanitary_values['wcpimh_sync_num'] = isset( $imh_settings['wcpimh_sync_num'] ) ? $imh_settings['wcpimh_sync_num'] : 5;
@@ -507,6 +520,7 @@ class WCIMPH_Admin {
 			$sanitary_values['wcpimh_doctype']   = isset( $imh_settings['wcpimh_doctype'] ) ? $imh_settings['wcpimh_doctype'] : 'invoice';
 			$sanitary_values['wcpimh_freeorder']   = isset( $imh_settings['wcpimh_freeorder'] ) ? $imh_settings['wcpimh_freeorder'] : 'no';
 			$sanitary_values['wcpimh_ecstatus']   = isset( $imh_settings['wcpimh_ecstatus'] ) ? $imh_settings['wcpimh_ecstatus'] : 'all';
+			$sanitary_values['wcpmih_design_id']   = isset( $imh_settings['wcpmih_design_id'] ) ? $imh_settings['wcpmih_design_id'] : 'invoice';
 		}
 
 		return $sanitary_values;
@@ -541,7 +555,7 @@ class WCIMPH_Admin {
 	 * @return void
 	 */
 	public function import_holded_section_automate() {
-		if ( wcpimh_is_premium() ) {
+		if ( connwoo_is_premium() ) {
 			esc_html_e( 'Make your settings to automate the sync.', 'import-holded-products-woocommerce' );
 		} else {
 			esc_html_e( 'Section only for Premium version', 'import-holded-products-woocommerce' );
@@ -558,7 +572,7 @@ class WCIMPH_Admin {
 	public function import_holded_section_info() {
 		echo sprintf( __( 'Put the connection API key settings in order to connect and sync products. You can go here <a href = "%s" target = "_blank">App Holded API</a>. ', 'import-holded-products-woocommerce' ), 'https://app.holded.com/api' );
 
-		if ( ! wcpimh_is_premium() ) {
+		if ( ! connwoo_is_premium() ) {
 			echo $this->show_get_premium();
 		}
 	}
@@ -715,6 +729,18 @@ class WCIMPH_Admin {
 			<option value="completed" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Only Completed', 'import-holded-products-woocommerce' ); ?></option>
 		</select>
 		<?php
+	}
+
+	/**
+	 * Callback Billing nif key
+	 *
+	 * @return void
+	 */
+	public function wcpmih_design_id_callback() {
+		printf(
+			'<input class="regular-text" type="text" name="imhset[wcpmih_design_id]" id="wcpmih_design_id" value="%s">',
+			isset( $this->imh_settings['wcpmih_design_id'] ) ? esc_attr( $this->imh_settings['wcpmih_design_id'] ) : ''
+		);
 	}
 
 	/**
@@ -955,7 +981,7 @@ class WCIMPH_Admin {
 				width: 270px;
 			}';
 		// Not premium version.
-		if ( ! wcpimh_is_premium() ) {
+		if ( ! connwoo_is_premium() ) {
 			echo '.wp-admin.wcpimh-plugin #wcpimh_catsep, .wp-admin.wcpimh-plugin #wcpimh_filter, .wp-admin.wcpimh-plugin #wcpimh_sync  {
 				pointer-events:none;
 			}';
