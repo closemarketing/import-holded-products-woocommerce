@@ -90,7 +90,7 @@ class WCIMPH_Admin {
 		?>
 
 		<div class="wrap">
-			<h2><?php esc_html_e( 'Holded Product Importing Settings', 'import-holded-products-woocommerce' ); ?></h2>
+			<h2><?php esc_html_e( 'WooCommerce Connection Settings with Holded', 'import-holded-products-woocommerce' ); ?></h2>
 			<p></p>
 			<?php settings_errors(); ?>
 
