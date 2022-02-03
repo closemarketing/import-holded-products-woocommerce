@@ -5,8 +5,8 @@ Donate link: https://close.marketing/go/donate/
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 5.9
-Stable tag: 1.4
-Version: 1.4
+Stable tag: 2.0
+Version: 2.0
 
 Syncs Products and data from Holded software to WooCommerce or Easy Digital Downloads.
 
@@ -27,9 +27,7 @@ These are the features:
 - Sync Orders to Holded.
 - Import pack products from Holded.
 
-[You could buy it here](https://checkout.freemius.com/mode/dialog/plugin/5133/plan/8469/)
-
-Made by [Closemarketing](https://close.marketing/)
+[You could buy it here](https://en.close.technology/connect-woocommerce-holded/)
 
 == Installation ==
 
@@ -40,12 +38,15 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/import-holded-products-woocommerce)
 
 == Changelog ==
-= 1.5 =
-*   Removed Freemius as engine.
+= 2.0 =
+*   Removed Freemius as engine sell.
 *   Removed Support to Easy Digital Downloads.
 *   Add Tags as list (separated with commas).
 *   Add VAT Info in checkout.
+*   Option to Company field in checkout.
 *   Premium: Add PDF generated from Holded.
+*   Premium: Better sync management.
+*   Refactoring code from free and fremium.
 
 = 1.4 =
 *   Option to not create document if order is free.
