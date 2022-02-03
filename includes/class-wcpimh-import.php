@@ -72,18 +72,6 @@ class WCPIMH_Import {
 		// Admin Styles.
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
 		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
-
-		// Cron jobs.
-		if ( WP_DEBUG ) {
-			//add_action( 'admin_head', array( $this, 'cron_sync_products' ), 20 );
-		}
-		$imh_settings = get_option( 'imhset' );
-		$sync_period  = isset( $imh_settings['wcpimh_sync'] ) ? strval( $imh_settings['wcpimh_sync'] ) : 'no';
-
-		if ( $sync_period && 'no' !== $sync_period ) {
-			add_action( $sync_period, array( $this, 'cron_sync_products' ) );
-		}
-		
 	}
 
 	/**
@@ -601,7 +589,7 @@ class WCPIMH_Import {
 							$pack_items = '';
 							if ( isset( $item['packItems'] ) && ! empty( $item['packItems'] ) ) {
 								foreach ( $item['packItems'] as $pack_item ) {
-									$item_simple     = $this->get_products( $pack_item['pid'] );
+									$item_simple     = $connapi_erp->get_products( $pack_item['pid'] );
 									$product_pack_id = $this->sync_product_simple( $item_simple, true );
 									$pack_items     .= $product_pack_id . '/' . $pack_item['u'] . ',';
 									$this->ajax_msg .= ' x ' . $pack_item['u'];
