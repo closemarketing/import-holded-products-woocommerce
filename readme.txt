@@ -45,7 +45,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 *   Add VAT Info in checkout.
 *   Option to Company field in checkout.
 *   Premium: Add PDF generated from Holded.
-*   Premium: Better sync management.
+*   Premium: Better sync management WooCommerce Action Scheduler.
 *   Refactoring code from free and fremium.
 
 = 1.4 =
