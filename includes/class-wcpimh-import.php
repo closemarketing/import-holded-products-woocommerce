@@ -385,9 +385,10 @@ class WCPIMH_Import {
 	 * @return boolean True to not get the product, false to get it.
 	 */
 	private function filter_product( $tag_product ) {
-		$imh_settings       = get_option( 'imhset' );
-		$tag_product_option = isset( $imh_settings['wcpimh_filter'] ) ? $imh_settings['wcpimh_filter'] : '';
-		if ( $tag_product_option && ! in_array( $tag_product_option, $tag_product, true ) ) {
+		$imh_settings = get_option( 'imhset' );
+		$tags_option  = explode( ',', $imh_settings['wcpimh_filter'] );
+
+		if ( empty( array_intersect( $tags_option, $tag_product ) ) ) {
 			return true;
 		} else {
 			return false;
