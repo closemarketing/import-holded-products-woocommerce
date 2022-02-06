@@ -252,7 +252,7 @@ class WCIMPH_Admin {
 
 		add_settings_field(
 			'wcpimh_filter',
-			__( 'Filter products by tag?', 'import-holded-products-woocommerce' ),
+			__( 'Filter products by tags? (separated by comma and no space)', 'import-holded-products-woocommerce' ),
 			array( $this, 'wcpimh_filter_callback' ),
 			'import-holded-admin',
 			'import_holded_setting_section'
