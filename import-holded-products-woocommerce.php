@@ -5,7 +5,7 @@
  * Description: Syncs Products and data from Holded to WooCommerce or Easy Digital Downloads.
  * Author: closemarketing
  * Author URI: https://close.technology/
- * Version: 2.0
+ * Version: 2.0b1
  * WC requires at least: 5.0
  * WC tested up to: 6.1
  *
@@ -17,9 +17,7 @@
  *
  */
 defined( 'ABSPATH' ) || exit;
-define( 'WCPIMH_VERSION', '1.4' );
-define( 'WCPIMH_ECOMMERCE', array( 'woocommerce', 'edd' ) );
-define( 'WCPIMH_TABLE_SYNC', 'wcpimh_product_sync' );
+define( 'WCPIMH_VERSION', '2.0b1' );
 define( 'WCPIMH_API', 'Holded' );
 define( 'WCPIMH_PURCHASE_URL', 'https://close.technology/connect-woocommerce-holded/?utm_source=WordPress' );
 

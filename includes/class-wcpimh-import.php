@@ -64,7 +64,7 @@ class WCPIMH_Import {
 	 */
 	public function __construct() {
 		global $wpdb;
-		$this->table_sync = $wpdb->prefix . WCPIMH_TABLE_SYNC;
+		$this->table_sync = $wpdb->prefix . 'wcpimh_product_sync';
 
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 11, 1 );
 		add_action( 'wp_ajax_wcpimh_import_products', array( $this, 'wcpimh_import_products' ) );
