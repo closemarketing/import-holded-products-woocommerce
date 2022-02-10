@@ -108,13 +108,14 @@ class CONNAPI_ERP {
 	 * @param string $order_data Data order.
 	 * @return array Array of products imported via API.
 	 */
-	private function create_order( $order_data ) {
-		if ( ! isset( $this->sync_settings['wcpimh_api'] ) ) {
+	public function create_order( $order_data ) {
+		$imh_settings = get_option( 'imhset' );
+		if ( ! isset( $imh_settings['wcpimh_api'] ) ) {
 			echo $this->get_message( sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'holded-for-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' ) );
 			return false;
 		}
-		$apikey  = isset( $this->sync_settings['wcpimh_api'] ) ? $this->sync_settings['wcpimh_api'] : '';
-		$doctype = isset( $this->sync_settings['wcpimh_doctype'] ) ? $this->sync_settings['wcpimh_doctype'] : 'nosync';
+		$apikey  = isset( $imh_settings['wcpimh_api'] ) ? $imh_settings['wcpimh_api'] : '';
+		$doctype = isset( $imh_settings['wcpimh_doctype'] ) ? $imh_settings['wcpimh_doctype'] : 'nosync';
 		if ( 'nosync' === $doctype ) {
 			return false;
 		}
@@ -138,7 +139,46 @@ class CONNAPI_ERP {
 		return $body_response;
 	}
 
-	public function get_image_product() {
+	/**
+	 * Create Order to Holded
+	 *
+	 * @param string $order_data Data order.
+	 * @return array Array of products imported via API.
+	 */
+	public function get_order_pdf( $invoice_id, $doctype, $document_id ) {
+		$imh_settings = get_option( 'imhset' );
+		$apikey  = isset( $imh_settings['wcpimh_api'] ) ? $imh_settings['wcpimh_api'] : '';
+		if ( empty( $apikey ) ) {
+			echo $this->get_message( sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'holded-for-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' ) );
+			return false;
+		}
+		$args   = array(
+			'headers' => array(
+				'key' => $apikey,
+			),
+			'timeout' => 10,
+		);
+		$url      = 'https://api.holded.com/api/invoicing/v1/documents/' . $doctype . '/' . $document_id . '/pdf';
+		$response = wp_remote_get( $url, $args );
+		$body     = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( isset( $body['status'] ) && 0 == $body['status'] ) {
+			return false;
+		}
+
+		$upload_dir = wp_upload_dir();
+		$dir_name   = $upload_dir['basedir'] . '/woocommerce_uploads';
+		if ( ! file_exists( $dir_name ) ) {
+			wp_mkdir_p( $dir_name );
+		}
+		$filename = '/' . $doctype . '-' . $document_id . '.pdf';
+		$file     = $dir_name . $filename;
+		file_put_contents( $file, base64_decode( $body['data'] ) );
+
+		return $dir_name . $filename;
+	}
+
+	public function get_image_product( $product_id, $holded_id ) {
 		$imh_settings = get_option( 'imhset' );
 		$apikey       = $imh_settings['wcpimh_api'];
 		$args         = array(
