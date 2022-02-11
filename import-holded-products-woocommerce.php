@@ -63,10 +63,10 @@ function wcpimh_general_admin_notice() {
 	$user_id = get_current_user_id();
 
 	if ( ! get_user_meta( $user_id, 'wcpimh_notice_orders_dismissed' ) ) {
-		echo  '<div class="notice notice-warning is-dismissible">' ;
-		echo  '<p>' . esc_html__( 'Sync Ecommerce Holded Premium now in version 1.3 brings you to sync Orders after they are completed.', 'import-holded-products-woocommerce' ) . '</p>' ;
+		echo '<div class="notice notice-warning is-dismissible">';
+		echo '<p>' . esc_html__( 'Connect WooCommerce Holded Premium now in version 1.3 brings you to sync Orders after they are completed.', 'import-holded-products-woocommerce' ) . '</p>';
 		$purchase_url = wp_nonce_url( 'admin.php?page=import_holded-account&wcpimh-notice-orders-dismissed', 'wcpimh_sync_orders' );
-		echo  '<p>' . sprintf( '<a href="%s" class="button-primary">%s</a>', $purchase_url, __( 'Purchase Premium Version', 'import-holded-products-woocommerce' ) ) . '</p>' ;
+		echo  '<p>' . sprintf( '<a href="%s" class="button-primary">%s</a>', $purchase_url, __( 'Purchase Premium Version', 'import-holded-products-woocommerce' ) ) . '</p>';
 		// phpcs:ignore -- no need to scape
 		echo  '</div>' ;
 	}
