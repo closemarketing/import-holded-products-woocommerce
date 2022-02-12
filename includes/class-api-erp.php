@@ -111,7 +111,7 @@ class CONNAPI_ERP {
 	public function create_order( $order_data ) {
 		$imh_settings = get_option( 'imhset' );
 		if ( ! isset( $imh_settings['wcpimh_api'] ) ) {
-			echo $this->get_message( sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'holded-for-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' ) );
+			echo $this->get_message( sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'import-holded-products-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' ) );
 			return false;
 		}
 		$apikey  = isset( $imh_settings['wcpimh_api'] ) ? $imh_settings['wcpimh_api'] : '';
@@ -149,7 +149,7 @@ class CONNAPI_ERP {
 		$imh_settings = get_option( 'imhset' );
 		$apikey  = isset( $imh_settings['wcpimh_api'] ) ? $imh_settings['wcpimh_api'] : '';
 		if ( empty( $apikey ) ) {
-			echo $this->get_message( sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'holded-for-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' ) );
+			echo $this->get_message( sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'import-holded-products-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' ) );
 			return false;
 		}
 		$args   = array(
@@ -167,7 +167,7 @@ class CONNAPI_ERP {
 		}
 
 		$upload_dir = wp_upload_dir();
-		$dir_name   = $upload_dir['basedir'] . '/woocommerce_uploads';
+		$dir_name   = $upload_dir['basedir'] . '/holded';
 		if ( ! file_exists( $dir_name ) ) {
 			wp_mkdir_p( $dir_name );
 		}
@@ -178,6 +178,13 @@ class CONNAPI_ERP {
 		return $dir_name . $filename;
 	}
 
+	/**
+	 * Gets image product from API holded
+	 *
+	 * @param int    $product_id Product ID.
+	 * @param string $holded_id Holded product ID.
+	 * @return array
+	 */
 	public function get_image_product( $product_id, $holded_id ) {
 		$imh_settings = get_option( 'imhset' );
 		$apikey       = $imh_settings['wcpimh_api'];
