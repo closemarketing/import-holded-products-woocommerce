@@ -361,7 +361,7 @@ class WCPIMH_Import {
 		}
 
 		if ( connwoo_is_pro() && class_exists( 'CONNWOO_Import_PRO' ) ) {
-			$categories_ids = $connwoo_pro->get_categories_ids( $imh_settings, $is_new_product );
+			$categories_ids = $connwoo_pro->get_categories_ids( $imh_settings, $category['name'], $is_new_product );
 			if ( ! empty( $categories_ids ) ) {
 				$product_props['category_ids'] = $categories_ids;
 			}

@@ -142,17 +142,27 @@ class CONNAPI_ERP {
 	/**
 	 * Create Order to Holded
 	 *
-	 * @param string $order_data Data order.
-	 * @return array Array of products imported via API.
+	 * @param  string $order_data Data order.
+	 * @return string Path url of file.
 	 */
-	public function get_order_pdf( $invoice_id, $doctype, $document_id ) {
+
+	/**
+	 * Get Order PDF from Holded
+	 *
+	 * @param string $doctype DocType Holded.
+	 * @param string $document_id Document ID from Holded.
+	 * @return string
+	 */
+	public function get_order_pdf( $doctype, $document_id ) {
 		$imh_settings = get_option( 'imhset' );
-		$apikey  = isset( $imh_settings['wcpimh_api'] ) ? $imh_settings['wcpimh_api'] : '';
+		$apikey       = isset( $imh_settings['wcpimh_api'] ) ? $imh_settings['wcpimh_api'] : '';
+
 		if ( empty( $apikey ) ) {
-			echo $this->get_message( sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'import-holded-products-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' ) );
+			error_log( sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'import-holded-products-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' ) ); // phpcs:ignore.
 			return false;
 		}
-		$args   = array(
+
+		$args     = array(
 			'headers' => array(
 				'key' => $apikey,
 			),
@@ -175,7 +185,7 @@ class CONNAPI_ERP {
 		$file     = $dir_name . $filename;
 		file_put_contents( $file, base64_decode( $body['data'] ) );
 
-		return $dir_name . $filename;
+		return $file;
 	}
 
 	/**

@@ -1,6 +1,6 @@
-=== Sync Holded for WooCommerce or Easy Digital Downloads ===
+=== Connect WooCommerce Holded ===
 Contributors: closemarketing, davidperez, sacrajaimez, freemius
-Tags: holded, woocommerce
+Tags: holded, woocommerce, connect woocommerce
 Donate link: https://close.marketing/go/donate/
 Requires at least: 4.0
 Requires PHP: 5.6
@@ -8,13 +8,13 @@ Tested up to: 5.9
 Stable tag: 2.0
 Version: 2.0
 
-Syncs Products and data from Holded software to WooCommerce or Easy Digital Downloads.
+Syncs Products and data from Holded software to WooCommerce.
 
 == Description ==
 
 This plugin allows you to import simple products from Holded to WooCommerce. 
 
-It creates a new menu in WooCommerce > Products > Import products from Holded.
+It creates a new menu in WooCommerce > Connect Holded.
 
 You can import simple products, and it will create new products if it does not find the SKU code from your WooCommerce. If the SKU exists, it will import all data except title and description from the product. The stock will be imported as well.
 
@@ -24,7 +24,9 @@ These are the features:
 - Import attributes as brands or others.
 - Import variable products.
 - Automate the syncronization.
-- Sync Orders to Holded.
+- Send Orders to Holded.
+- Send generated Holded Document attached in WooCommerce notifications.
+- Option to select the Design of the generated Holded document.
 - Import pack products from Holded.
 
 [You could buy it here](https://en.close.technology/connect-woocommerce-holded/)

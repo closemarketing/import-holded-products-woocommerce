@@ -36,20 +36,6 @@ class WCIMPH_Admin {
 	private $label_pro;
 
 	/**
-	 * Is Woocommerce active?
-	 *
-	 * @var boolean
-	 */
-	private $is_woocommerce_active;
-
-	/**
-	 * Is EDD active?
-	 *
-	 * @var boolean
-	 */
-	private $is_edd_active;
-
-	/**
 	 * Construct of class
 	 */
 	public function __construct() {
@@ -57,9 +43,6 @@ class WCIMPH_Admin {
 		add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
 		add_action( 'admin_init', array( $this, 'page_init' ) );
 		add_action( 'admin_head', array( $this, 'custom_css' ) );
-
-		$this->is_woocommerce_active = imhwc_is_active_ecommerce( 'woocommerce' ) ? true : false;
-		$this->is_edd_active         = imhwc_is_active_ecommerce( 'edd' ) ? true : false;
 	}
 
 	/**
@@ -106,10 +89,6 @@ class WCIMPH_Admin {
 				if ( connwoo_is_pro() ) {
 					?>
 					<a href="?page=import_holded&tab=license" class="nav-tab <?php echo 'license' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'License activation', 'import-holded-products-woocommerce' ); ?></a>
-					<?php
-				}
-				if ( connwoo_is_pro() ) {
-					?>
 					<a href="?page=import_holded&tab=licensedeac" class="nav-tab <?php echo 'licensedeac' === $active_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e( 'License deactivation', 'import-holded-products-woocommerce' ); ?></a>
 					<?php
 				}
