@@ -315,7 +315,7 @@ class WCIMPH_Admin {
 			);
 		}
 
-		$name_nif = __( 'ID design for document?', 'import-holded-products-woocommerce' );
+		$name_nif = __( 'ID Holded design for document', 'import-holded-products-woocommerce' );
 		if ( connwoo_is_pro() ) {
 			add_settings_field(
 				'wcpimh_design_id',
