@@ -360,8 +360,8 @@ class WCPIMH_Import {
 				break;
 		}
 
-		if ( connwoo_is_pro() && class_exists( 'CONNWOO_Import_PRO' ) ) {
-			$categories_ids = $connwoo_pro->get_categories_ids( $imh_settings, $category['name'], $is_new_product );
+		if ( connwoo_is_pro() && class_exists( 'CONNWOO_Import_PRO' ) && isset( $item['type'] ) && ! empty( $item['type'] ) ) {
+			$categories_ids = $connwoo_pro->get_categories_ids( $imh_settings, $item['type'], $is_new_product );
 			if ( ! empty( $categories_ids ) ) {
 				$product_props['category_ids'] = $categories_ids;
 			}
@@ -369,7 +369,7 @@ class WCPIMH_Import {
 
 		if ( connwoo_is_pro() && class_exists( 'CONNWOO_Import_PRO' ) ) {
 			// Imports image.
-			$connwoo_pro->put_product_image( $item['id'], $product_id );
+			$connwoo_pro->put_product_image( $imh_settings, $item['id'], $product_id );
 		}
 		// Set properties and save.
 		$product->set_props( $product_props );

@@ -191,14 +191,14 @@ class CONNAPI_ERP {
 	/**
 	 * Gets image product from API holded
 	 *
-	 * @param int    $product_id Product ID.
+	 * @param array  $imh_settings Settings values.
 	 * @param string $holded_id Holded product ID.
+	 * @param int    $product_id Product ID.
 	 * @return array
 	 */
-	public function get_image_product( $product_id, $holded_id ) {
-		$imh_settings = get_option( 'imhset' );
-		$apikey       = $imh_settings['wcpimh_api'];
-		$args         = array(
+	public function get_image_product( $imh_settings, $holded_id, $product_id ) {
+		$apikey = $imh_settings['wcpimh_api'] ?? '';
+		$args   = array(
 			'headers' => array(
 				'key' => $apikey,
 			),
@@ -222,7 +222,10 @@ class CONNAPI_ERP {
 		$filename  = get_the_title( $product_id ) . '.' . $extension;
 		$upload    = wp_upload_bits( $filename, null, $body );
 
-		return $upload;
+		return array(
+			'upload'       => $upload,
+			'content_type' => $content_type,
+		);
 	}
 
 }
