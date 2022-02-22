@@ -18,7 +18,7 @@ It creates a new menu in WooCommerce > Connect Holded.
 
 You can import simple products, and it will create new products if it does not find the SKU code from your WooCommerce. If the SKU exists, it will import all data except title and description from the product. The stock will be imported as well.
 
-¡We have a PRO version!
+¡We have a Premium version!
 These are the features:
 - Import categories from Holded.
 - Import attributes as brands or others.
@@ -46,23 +46,23 @@ WordPress installation and then activate the Plugin from Plugins page.
 *   Add Tags as list (separated with commas).
 *   Add VAT Info in checkout.
 *   Option to Company field in checkout.
-*   PRO: Add PDF generated from Holded.
-*   PRO: Better sync management WooCommerce Action Scheduler.
-*   Refactoring code from free and fremium.
-*   Select design in document holded.
+*   Premium: Add PDF generated from Holded.
+*   Premium: Better sync management WooCommerce Action Scheduler.
+*   Premium: Refactoring code from free and fremium.
+*   Premium: Select design in document holded.
 
 = 1.4 =
 *   Option to not create document if order is free.
 
 = 1.3 =
-*   Sync orders to Holded (PRO) automatically and force manually for past orders.
-*   Sync Pack products to Holded (PRO).
+*   Sync orders to Holded (Premium) automatically and force manually for past orders.
+*   Sync Pack products to Holded (Premium).
 *   Fix: Attributes duplicated in variation product not imported.
 *   Fix: Categories not imported in simple products.
 
 = 1.2 =
-*   Automate your syncronization! (PRO).
-*   Option email when is finished (PRO).
+*   Automate your syncronization! (Premium).
+*   Option email when is finished (Premium).
 *   Fix sku saved for EDD.
 *   Better metavalue search for SKU.
 *   Fix Holded Pagination (thanks to itSerra).

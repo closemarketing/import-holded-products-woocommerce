@@ -16,6 +16,7 @@
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
  */
+
 defined( 'ABSPATH' ) || exit;
 define( 'WCPIMH_VERSION', '2.0' );
 define( 'WCPIMH_API', 'Holded' );
