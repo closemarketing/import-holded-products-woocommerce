@@ -39,7 +39,9 @@ class WCIMPH_Admin {
 	 * Construct of class
 	 */
 	public function __construct() {
-		$this->label_pro = __( '(ONLY PRO VERSION)', 'import-holded-products-woocommerce' );
+		global $wpdb;
+		$this->table_sync = $wpdb->prefix . 'wcpimh_product_sync';
+		$this->label_pro  = __( '(ONLY PRO VERSION)', 'import-holded-products-woocommerce' );
 		add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
 		add_action( 'admin_init', array( $this, 'page_init' ) );
 		add_action( 'admin_head', array( $this, 'custom_css' ) );
@@ -543,6 +545,13 @@ class WCIMPH_Admin {
 
 	}
 
+	private function get_count_products_synced() {
+		global $wpdb;
+		$count       = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync WHERE synced = 1" );
+		$total_count = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync" );
+		return $count . ' / ' . $total_count;
+	}
+
 	/**
 	 * Info for holded section.
 	 *
@@ -551,6 +560,12 @@ class WCIMPH_Admin {
 	public function import_holded_section_automate() {
 		if ( connwoo_is_pro() ) {
 			esc_html_e( 'Make your settings to automate the sync.', 'import-holded-products-woocommerce' );
+			echo '<div class="sync-status" style="text-align:right;">';
+			echo '<strong>';
+			esc_html_e( 'Actual Automate status:', 'import-holded-products-woocommerce' );
+			echo '</strong> ' . esc_html( $this->get_count_products_synced() ) . ' ';
+			esc_html_e( 'products synced with Holded.', 'import-holded-products-woocommerce' );
+			echo '</div>';
 		} else {
 			esc_html_e( 'Section only for PRO version', 'import-holded-products-woocommerce' );
 
