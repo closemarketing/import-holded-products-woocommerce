@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Connect WooCommerce Holded
  * Plugin URI: https://close.technology/wordpress-plugins/integra-tienda-online-woocommerce-holded/
- * Description: Syncs Products and data from Holded to WooCommerce or Easy Digital Downloads.
+ * Description: Imports simple products and stock from Holded to WooCommerce.
  * Author: closemarketing
  * Author URI: https://close.technology/
  * Version: 2.0
