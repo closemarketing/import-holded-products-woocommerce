@@ -202,7 +202,7 @@ class WCPIMH_Import {
 	 * @param string $sku SKU of product.
 	 * @return string $product_id Products id.
 	 */
-	private function find_product( $sku ) {
+	public function find_product( $sku ) {
 		global $wpdb;
 		$post_type = 'product';
 		$meta_key  = '_sku';
@@ -401,7 +401,7 @@ class WCPIMH_Import {
 	 * @param [type] $item Item product from api.
 	 * @return void
 	 */
-	private function create_product_post( $item ) {
+	public function create_product_post( $item ) {
 		$imh_settings = get_option( 'imhset' );
 		$prod_status  = ( isset( $imh_settings['wcpimh_prodst'] ) && $imh_settings['wcpimh_prodst'] ) ? $imh_settings['wcpimh_prodst'] : 'draft';
 
