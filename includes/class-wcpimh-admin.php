@@ -547,9 +547,16 @@ class WCIMPH_Admin {
 
 	private function get_count_products_synced() {
 		global $wpdb;
-		$count       = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync WHERE synced = 1" );
-		$total_count = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync" );
-		return $count . ' / ' . $total_count;
+		$count        = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync WHERE synced = 1" );
+		$total_count  = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync" );
+		$count_return = $count . ' / ' . $total_count;
+
+		$total_api_products = (int) get_option( 'wcpimh_total_api_products' );
+		if ( $total_api_products || $total_count !== $total_api_products ) {
+			$count_return .= ' ' . esc_html__( 'filtered', 'import-holded-products-woocommerce' );
+			$count_return .= ' ( ' . $total_api_products . ' ' . esc_html__( 'total', 'import-holded-products-woocommerce' ) . ' )';
+		}
+		return $count_return;
 	}
 
 	/**
