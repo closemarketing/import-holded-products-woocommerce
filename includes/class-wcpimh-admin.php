@@ -743,34 +743,21 @@ class WCIMPH_Admin {
 	 * @return void
 	 */
 	public function wcpimh_sync_callback() {
+		global $cron_options;
 		?>
 		<select name="imhset[wcpimh_sync]" id="wcpimh_sync">
 			<?php $selected = ( isset( $this->imh_settings['wcpimh_sync'] ) && 'no' === $this->imh_settings['wcpimh_sync'] ) ? 'selected' : ''; ?>
 			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'import-holded-products-woocommerce' ); ?></option>
 
-			<?php $selected = ( isset( $this->imh_settings['wcpimh_sync'] ) && 'wcpimh_cron_daily' === $this->imh_settings['wcpimh_sync'] ) ? 'selected' : ''; ?>
-			<option value="wcpimh_cron_daily" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Every day', 'import-holded-products-woocommerce' ); ?></option>
-
-			<?php $selected = ( isset( $this->imh_settings['wcpimh_sync'] ) && 'wcpimh_cron_twelve_hours' === $this->imh_settings['wcpimh_sync'] ) ? 'selected' : ''; ?>
-			<option value="wcpimh_cron_twelve_hours" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Every twelve hours', 'import-holded-products-woocommerce' ); ?></option>
-
-			<?php $selected = ( isset( $this->imh_settings['wcpimh_sync'] ) && 'wcpimh_cron_six_hours' === $this->imh_settings['wcpimh_sync'] ) ? 'selected' : ''; ?>
-			<option value="wcpimh_cron_six_hours" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Every six hours', 'import-holded-products-woocommerce' ); ?></option>
-
-			<?php $selected = ( isset( $this->imh_settings['wcpimh_sync'] ) && 'wcpimh_cron_three_hours' === $this->imh_settings['wcpimh_sync'] ) ? 'selected' : ''; ?>
-			<option value="wcpimh_cron_three_hours" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Every three hours', 'import-holded-products-woocommerce' ); ?></option>
-
-			<?php $selected = ( isset( $this->imh_settings['wcpimh_sync'] ) && 'wcpimh_cron_one_hour' === $this->imh_settings['wcpimh_sync'] ) ? 'selected' : ''; ?>
-			<option value="wcpimh_cron_one_hour" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Every hour', 'import-holded-products-woocommerce' ); ?></option>
-
-			<?php $selected = ( isset( $this->imh_settings['wcpimh_sync'] ) && 'wcpimh_cron_thirty_minutes' === $this->imh_settings['wcpimh_sync'] ) ? 'selected' : ''; ?>
-			<option value="wcpimh_cron_thirty_minutes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Every thirty minutes', 'import-holded-products-woocommerce' ); ?></option>
-
-			<?php $selected = ( isset( $this->imh_settings['wcpimh_sync'] ) && 'wcpimh_cron_fifteen_minutes' === $this->imh_settings['wcpimh_sync'] ) ? 'selected' : ''; ?>
-			<option value="wcpimh_cron_fifteen_minutes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Every fifteen minutes', 'import-holded-products-woocommerce' ); ?></option>
-
-			<?php $selected = ( isset( $this->imh_settings['wcpimh_sync'] ) && 'wcpimh_cron_five_minutes' === $this->imh_settings['wcpimh_sync'] ) ? 'selected' : ''; ?>
-			<option value="wcpimh_cron_five_minutes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Every five minutes', 'import-holded-products-woocommerce' ); ?></option>
+			<?php
+			if ( ! empty( $cron_options ) ) {
+				foreach ( $cron_options as $cron_option ) {
+					$selected = ( isset( $this->imh_settings['wcpimh_sync'] ) && $cron_option['cron'] === $this->imh_settings['wcpimh_sync'] ) ? 'selected' : '';
+					echo '<option value="' . esc_html( $cron_option['cron'] ) . '" ' . esc_html( $selected ) . '>';
+					echo esc_html( $cron_option['display'] ) . '</option>';
+				}
+			}
+			?>
 		</select>
 		<?php
 	}
