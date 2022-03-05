@@ -544,35 +544,64 @@ class WCIMPH_Admin {
 		return $get_pro;
 
 	}
-
-	private function get_count_products_synced() {
-		global $wpdb;
-		$count        = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync WHERE synced = 1" );
-		$total_count  = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync" );
-		$count_return = $count . ' / ' . $total_count;
-
-		$total_api_products = (int) get_option( 'wcpimh_total_api_products' );
-		if ( $total_api_products || $total_count !== $total_api_products ) {
-			$count_return .= ' ' . esc_html__( 'filtered', 'import-holded-products-woocommerce' );
-			$count_return .= ' ( ' . $total_api_products . ' ' . esc_html__( 'total', 'import-holded-products-woocommerce' ) . ' )';
-		}
-		return $count_return;
-	}
-
 	/**
 	 * Info for holded section.
 	 *
 	 * @return void
 	 */
 	public function import_holded_section_automate() {
+		global $wpdb;
 		if ( connwoo_is_pro() ) {
+			$count        = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync WHERE synced = 1" );
+			$total_count  = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync" );
+			$count_return = $count . ' / ' . $total_count;
+
+			$total_api_products = (int) get_option( 'wcpimh_total_api_products' );
+			if ( $total_api_products || $total_count !== $total_api_products ) {
+				$count_return .= ' ' . esc_html__( 'filtered', 'import-holded-products-woocommerce' );
+				$count_return .= ' ( ' . $total_api_products . ' ' . esc_html__( 'total', 'import-holded-products-woocommerce' ) . ' )';
+			}
+			$percentage = intval( $count / $total_count * 100 );
 			esc_html_e( 'Make your settings to automate the sync.', 'import-holded-products-woocommerce' );
 			echo '<div class="sync-status" style="text-align:right;">';
 			echo '<strong>';
 			esc_html_e( 'Actual Automate status:', 'import-holded-products-woocommerce' );
-			echo '</strong> ' . esc_html( $this->get_count_products_synced() ) . ' ';
+			echo '</strong> ' . esc_html( $count_return ) . ' ';
 			esc_html_e( 'products synced with Holded.', 'import-holded-products-woocommerce' );
 			echo '</div>';
+			echo '
+			<style>
+			.progress-bar {
+				background-color: #1a1a1a;
+				height: 30px;
+				padding: 5px;
+				width: 100%;
+				margin: 5px 0;
+				border-radius: 5px;
+				box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
+				}
+				.progress-bar span {
+				display: inline-block;
+				float: left;
+				height: 100%;
+				border-radius: 3px;
+				box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset;
+				transition: width .4s ease-in-out;
+				}
+				.blue span {
+				background-color: #D33564;
+				}
+				.progress-text {
+				text-align: right;
+				color: white;
+				margin: 7px 0px;
+				font-size: 18px;
+				}
+			</style>
+			<div class="progress-bar blue">
+			<span style="width:' . esc_html( $percentage ) . '%"></span>
+			<div class="progress-text">' . esc_html( $percentage ) . '%</div>
+			</div>';
 		} else {
 			esc_html_e( 'Section only for PRO version', 'import-holded-products-woocommerce' );
 
