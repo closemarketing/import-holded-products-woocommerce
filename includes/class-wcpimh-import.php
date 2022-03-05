@@ -217,7 +217,7 @@ class WCPIMH_Import {
 	 * @param string $sku SKU of product.
 	 * @return string $product_id Products id.
 	 */
-	private function find_parent_product( $sku ) {
+	public function find_parent_product( $sku ) {
 		global $wpdb;
 		$post_id_var = $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $sku ) );
 
@@ -239,7 +239,7 @@ class WCPIMH_Import {
 	 * @param array  $pack_items Array of packs: post_id and qty.
 	 * @return void.
 	 */
-	private function sync_product( $item, $product_id = 0, $type, $pack_items = null ) {
+	public function sync_product( $item, $product_id = 0, $type, $pack_items = null ) {
 		global $connwoo_pro;
 
 		$imh_settings     = get_option( 'imhset' );
@@ -249,9 +249,6 @@ class WCPIMH_Import {
 		$rate_id          = isset( $imh_settings['wcpimh_rates'] ) ? $imh_settings['wcpimh_rates'] : 'default';
 		$post_status      = ( isset( $imh_settings['wcpimh_prodst'] ) && $imh_settings['wcpimh_prodst'] ) ? $imh_settings['wcpimh_prodst'] : 'draft';
 		$is_new_product   = ( 0 === $product_id || false === $product_id ) ? true : false;
-
-		// Translations.
-		$msg_variation_error = __( 'Variation error: ', 'import-holded-products-woocommerce' );
 
 		/**
 		 * # Updates info for the product
@@ -399,7 +396,7 @@ class WCPIMH_Import {
 	 * Creates the post for the product from item
 	 *
 	 * @param [type] $item Item product from api.
-	 * @return void
+	 * @return int
 	 */
 	public function create_product_post( $item ) {
 		$imh_settings = get_option( 'imhset' );
@@ -424,7 +421,8 @@ class WCPIMH_Import {
 	/**
 	 * Creates the simple product post from item
 	 *
-	 * @param array $item
+	 * @param array   $item Item from holded.
+	 * @param boolean $from_pack Item is a pack.
 	 * @return int
 	 */
 	private function sync_product_simple( $item, $from_pack = false ) {
@@ -619,7 +617,6 @@ class WCPIMH_Import {
 						}
 						$this->ajax_msg .= $item['name'] . '. SKU: ' . $item['sku'] . ' (' . $item['kind'] . ')';
 					} elseif ( ! $is_filtered_product && 'pack' === $item['kind'] && connwoo_is_pro() && class_exists( 'CONNWOO_Import_PRO' ) && ! $plugin_grouped_prod_active ) {
-						$plugin_url = 
 						$this->ajax_msg .= '<span class="warning">' . __( 'Product needs Plugin to import: ', 'import-holded-products-woocommerce' );
 						$this->ajax_msg .= '<a href="https://wordpress.org/plugins/woo-product-bundle/" target="_blank">WPC Product Bundles for WooCommerce</a> ';
 						$this->ajax_msg .= '(' . $item['kind'] . ') </span></br>';
@@ -722,6 +719,13 @@ class WCPIMH_Import {
 		wp_mail( get_option( 'admin_email' ), __( 'Error in Products Synced in', 'import-holded-products-woocommerce' ) . ' ' . get_option( 'blogname' ), $error_content, $headers );
 	}
 
+	/**
+	 * Attachs images to a post id
+	 *
+	 * @param int    $post_id Post id.
+	 * @param string $img_string Image string from API.
+	 * @return int
+	 */
 	public function attach_image( $post_id, $img_string ) {
 		if ( ! $img_string || ! $post_id ) {
 			return null;
@@ -771,18 +775,6 @@ class WCPIMH_Import {
 				set_post_thumbnail( $post_id, $attach_id );
 			}
 		}
-	}
-
-	/**
-	 * Get mains image.
-	 *
-	 * @param string $id ID of the post.
-	 * @param string $post_id Post ID.
-	 * @return void
-	 */
-	private function get_main_image( $id, $post_id ) {
-		$product_main_img = $this->get_product_detail( $id );
-		$this->attach_image( $post_id, $product_main_img );
 	}
 
 	/**
