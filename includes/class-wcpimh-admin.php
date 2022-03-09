@@ -573,7 +573,7 @@ class WCIMPH_Admin {
 			<style>
 			.progress-bar {
 				background-color: #1a1a1a;
-				height: 30px;
+				height: 16px;
 				padding: 5px;
 				width: 100%;
 				margin: 5px 0;
@@ -589,12 +589,12 @@ class WCIMPH_Admin {
 				transition: width .4s ease-in-out;
 				}
 				.blue span {
-				background-color: #D33564;
+				background-color: #2271b1;
 				}
 				.progress-text {
 				text-align: right;
 				color: white;
-				margin: 7px 0px;
+				margin: 0;
 				font-size: 18px;
 				}
 			</style>
