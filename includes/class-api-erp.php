@@ -98,6 +98,26 @@ class CONNAPI_ERP {
 			error_admin_message( 'ERROR', $body_response['errors'][0]['message'] . ' <br/> Api Call: /' );
 			return false;
 		}
+		/*
+		$next     = true;
+		$page     = 1;
+		$output   = array();
+		$products = array();
+
+		while ( $next ) {
+			$output = $connapi_erp->get_products( null, $page );
+			if ( false === $output ) {
+				return false;
+			}
+			$products = array_merge( $products, $output );
+
+			if ( count( $output ) === MAX_LIMIT_HOLDED_API ) {
+				$page++;
+			} else {
+				$next = false;
+			}
+		}
+		*/
 
 		return $body_response;
 	}
