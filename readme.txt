@@ -4,9 +4,9 @@ Tags: holded, woocommerce, connect woocommerce
 Donate link: https://close.marketing/go/donate/
 Requires at least: 4.0
 Requires PHP: 5.6
-Tested up to: 5.9
-Stable tag: 2.0
-Version: 2.0
+Tested up to: 6.0
+Stable tag: 2.0.1
+Version: 2.0.1
 
 Syncs Products and data from Holded software to WooCommerce.
 
@@ -40,6 +40,10 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/import-holded-products-woocommerce)
 
 == Changelog ==
+= 2.0.1 =
+*   Fix: Filtered product if empty.
+*   Fix: Error rates empty.
+
 = 2.0 =
 *   Removed Freemius as engine sell.
 *   Removed Support to Easy Digital Downloads.
