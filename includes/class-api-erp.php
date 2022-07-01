@@ -58,8 +58,12 @@ class CONNAPI_ERP {
 		$array_options = array(
 			'default' => __( 'Default price', 'import-holded-products-woocommerce' ),
 		);
-		foreach ( $body_response as $rate ) {
-			$array_options[$rate['id']] = $rate['name'];
+		if ( ! empty( $body_response ) ) {
+			foreach ( $body_response as $rate ) {
+				if ( isset( $rate['id'] ) && isset( $rate['name'] ) ) {
+					$array_options[$rate['id']] = $rate['name'];
+				}
+			}
 		}
 		return $array_options;
 	}
