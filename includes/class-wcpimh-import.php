@@ -383,6 +383,9 @@ class WCPIMH_Import {
 	 */
 	private function filter_product( $tag_product ) {
 		$imh_settings = get_option( 'imhset' );
+		if ( empty( $imh_settings['wcpimh_filter'] ) ) {
+			return false;
+		}
 		$tags_option  = explode( ',', $imh_settings['wcpimh_filter'] );
 
 		if ( empty( array_intersect( $tags_option, $tag_product ) ) ) {
