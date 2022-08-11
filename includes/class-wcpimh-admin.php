@@ -552,6 +552,10 @@ class WCIMPH_Admin {
 	public function import_holded_section_automate() {
 		global $wpdb;
 		if ( connwoo_is_pro() ) {
+			if ( ! in_array( $this->table_sync, $wpdb->tables ) ) {
+				echo esc_html__( 'Error. Table Sync does not exists. Try to reactivate the plugin.', 'import-holded-products-woocommerce' );
+				return;
+			}
 			$count        = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync WHERE synced = 1" );
 			$total_count  = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync" );
 			$count_return = $count . ' / ' . $total_count;

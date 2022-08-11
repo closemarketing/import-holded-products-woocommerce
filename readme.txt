@@ -43,6 +43,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 = 2.0.1 =
 *   Fix: Filtered product if empty.
 *   Fix: Error rates empty.
+*   Premium: Fix Custom Table not created.
 
 = 2.0 =
 *   Removed Freemius as engine sell.
