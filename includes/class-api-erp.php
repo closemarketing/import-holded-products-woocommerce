@@ -102,26 +102,6 @@ class CONNAPI_ERP {
 			error_admin_message( 'ERROR', $body_response['errors'][0]['message'] . ' <br/> Api Call: /' );
 			return false;
 		}
-		/*
-		$next     = true;
-		$page     = 1;
-		$output   = array();
-		$products = array();
-
-		while ( $next ) {
-			$output = $connapi_erp->get_products( null, $page );
-			if ( false === $output ) {
-				return false;
-			}
-			$products = array_merge( $products, $output );
-
-			if ( count( $output ) === MAX_LIMIT_HOLDED_API ) {
-				$page++;
-			} else {
-				$next = false;
-			}
-		}
-		*/
 
 		return $body_response;
 	}
@@ -135,7 +115,10 @@ class CONNAPI_ERP {
 	public function create_order( $order_data ) {
 		$imh_settings = get_option( 'imhset' );
 		if ( ! isset( $imh_settings['wcpimh_api'] ) ) {
-			echo $this->get_message( sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'import-holded-products-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' ) );
+			error_admin_message(
+				'ERROR',
+				sprintf( __( 'WooCommerce Holded: Plugin is enabled but no api key or secret provided. Please enter your api key and secret <a href="%s">here</a>.', 'import-holded-products-woocommerce' ), '/wp-admin/admin.php?page=import_holded&tab=settings' )
+			);
 			return false;
 		}
 		$apikey  = isset( $imh_settings['wcpimh_api'] ) ? $imh_settings['wcpimh_api'] : '';
