@@ -28,9 +28,11 @@ function sync_ecommerce_check_can_sync() {
  *
  * @return array
  */
-function connwoo_is_pro() {
-	return apply_filters(
-		'connwoo_is_pro',
-		false
-	);
+if ( ! function_exists( 'connwoo_is_pro' ) ) {
+	function connwoo_is_pro() {
+		return apply_filters(
+			'connwoo_is_pro',
+			false
+		);
+	}
 }

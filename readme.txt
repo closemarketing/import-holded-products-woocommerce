@@ -40,6 +40,10 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/import-holded-products-woocommerce)
 
 == Changelog ==
+= 2.1.0 =
+*   Fix: error message order.
+*   Admin design.
+
 = 2.0.1 =
 *   Fix: Filtered product if empty.
 *   Fix: Error rates empty.

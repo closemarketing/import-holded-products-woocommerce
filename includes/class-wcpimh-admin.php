@@ -42,9 +42,24 @@ class WCIMPH_Admin {
 		global $wpdb;
 		$this->table_sync = $wpdb->prefix . 'wcpimh_product_sync';
 		$this->label_pro  = __( '(ONLY PRO VERSION)', 'import-holded-products-woocommerce' );
+		add_action( 'admin_enqueue_scripts', array( $this, 'conn_woo_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
 		add_action( 'admin_init', array( $this, 'page_init' ) );
 		add_action( 'admin_head', array( $this, 'custom_css' ) );
+	}
+
+	/**
+	* function_description
+	*
+	* @return void
+	*/
+	function conn_woo_scripts() {
+		wp_enqueue_style(
+			'connect-woo-admin',
+			WCPIMHF_PLUGIN_URL . '/includes/assets/admin.css',
+			array(),
+			WCPIMH_VERSION
+		);
 	}
 
 	/**
@@ -74,8 +89,20 @@ class WCIMPH_Admin {
 		$this->imhset_public = get_option( 'imhset_public' );
 		?>
 
+		<div class="header-wrap">
+			<div class="wrapper">
+				<h2 style="display: none;"></h2>
+				<div id="nag-container"></div>
+				<div class="header connwoo-header">
+					<div class="logo">
+						<img src="<?php echo WCPIMHF_PLUGIN_URL . 'includes/assets/logo.svg'; ?>" height="35" width="154"/>
+						<h2><?php esc_html_e( 'WooCommerce Connection Settings with Holded', 'import-holded-products-woocommerce' ); ?></h2>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="wrap">
-			<h2><?php esc_html_e( 'WooCommerce Connection Settings with Holded', 'import-holded-products-woocommerce' ); ?></h2>
 			<p></p>
 			<?php settings_errors(); ?>
 
