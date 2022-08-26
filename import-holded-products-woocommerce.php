@@ -5,7 +5,7 @@
  * Description: Imports simple products and stock from Holded to WooCommerce.
  * Author: closemarketing
  * Author URI: https://close.technology/
- * Version: 2.1.0
+ * Version: 2.1.0-beta.1
  * WC requires at least: 5.0
  * WC tested up to: 6.1
  *
@@ -18,7 +18,7 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-define( 'WCPIMH_VERSION', '2.1.0' );
+define( 'WCPIMH_VERSION', '2.1.0-beta.1' );
 define( 'WCPIMH_API', 'Holded' );
 define( 'WCPIMHF_PLUGIN', __FILE__ );
 define( 'WCPIMHF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -64,6 +64,15 @@ add_action( 'admin_notices', 'wcpimh_general_admin_notice' );
  * @return void
  */
 function wcpimh_general_admin_notice() {
+	// Prevents fatal error is_plugin_active.
+	if ( ! function_exists( 'is_plugin_active' ) ) {
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+	
+	if ( is_plugin_active( 'import-holded-products-woocommerce-premium/import-holded-products-woocommerce.php' ) ) {
+		return;
+	}
+
 	$user_id = get_current_user_id();
 
 	if ( ! get_user_meta( $user_id, 'wcpimh_notice_orders_dismissed' ) ) {
