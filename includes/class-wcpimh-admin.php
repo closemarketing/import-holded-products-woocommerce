@@ -581,14 +581,14 @@ class WCIMPH_Admin {
 		if ( connwoo_is_pro() ) {
 			$count        = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync WHERE synced = 1" );
 			$total_count  = $wpdb->get_var( "SELECT COUNT(*) FROM $this->table_sync" );
-			$count_return = $count . ' / ' . $total_count;
+			$count_return = $total_count > 0 ? $count . ' / ' . $total_count : 0;
 
 			$total_api_products = (int) get_option( 'wcpimh_total_api_products' );
 			if ( $total_api_products || $total_count !== $total_api_products ) {
 				$count_return .= ' ' . esc_html__( 'filtered', 'import-holded-products-woocommerce' );
 				$count_return .= ' ( ' . $total_api_products . ' ' . esc_html__( 'total', 'import-holded-products-woocommerce' ) . ' )';
 			}
-			$percentage = intval( $count / $total_count * 100 );
+			$percentage = $total_count > 0 ? intval( $count / $total_count * 100 ) : 0;
 			esc_html_e( 'Make your settings to automate the sync.', 'import-holded-products-woocommerce' );
 			echo '<div class="sync-status" style="text-align:right;">';
 			echo '<strong>';
