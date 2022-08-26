@@ -482,31 +482,35 @@ class WCPIMH_Import {
 			$plugin_grouped_prod_active = false;
 		}
 
-		$syncLoop     = isset( $syncLoop ) ? $syncLoop : 0;
+		$syncLoop     = isset( $syncLoop ) ? (int) $syncLoop : 0;
 
 		// Translations.
 		$msg_product_created = __( 'Product created: ', 'import-holded-products-woocommerce' );
 		$msg_product_synced  = __( 'Product synced: ', 'import-holded-products-woocommerce' );
 
-		// Start.
-		if ( ! isset( $this->products ) ) {
+
+		if ( 0 === $syncLoop ) {
 			$next     = true;
 			$page     = 1;
 			$output   = array();
-			$products = array();
+			$index    = 0;
 
 			while ( $next ) {
 				$this->write_log( 'Page: ' . $page );
 				$output   = $connapi_erp->get_products( null, $page );
-				$products = array_merge( $products, $output );
+
+				foreach ( $output as $product ) {
+					set_transient( 'connwoo_query_products_api_' . $index, $product, HOUR_IN_SECONDS );
+					$index++;
+				}
 
 				if ( count( $output ) === MAX_LIMIT_HOLDED_API ) {
 					$page++;
 				} else {
 					$next = false;
 				}
+				set_transient( 'connwoo_query_products_api_count', $index, HOUR_IN_SECONDS );
 			}
-			$this->products = $products;
 		}
 
 		if ( false === $this->products ) {
@@ -516,10 +520,8 @@ class WCPIMH_Import {
 				die();
 			}
 		} else {
-			$products_array           = $this->products;
-			$products_count           = count( $products_array );
-			$item                     = $products_array[ $syncLoop ];
-			$error_products_html      = '';
+			$products_count           = get_transient( 'connwoo_query_products_api_count' );
+			$item = get_transient( 'connwoo_query_products_api_' . $syncLoop );
 			$this->msg_error_products = array();
 
 			// For testing:
@@ -541,7 +543,6 @@ class WCPIMH_Import {
 						die( esc_html( __( 'No products to import', 'import-holded-products-woocommerce' ) ) );
 					}
 				} else {
-					$is_new_product      = false;
 					$post_id             = 0;
 					$is_filtered_product = $this->filter_product( $item['tags'] );
 
@@ -649,6 +650,8 @@ class WCPIMH_Import {
 						);
 					}
 				}
+				// Deletes transient.
+				delete_transient( 'connwoo_query_products_api_' . $syncLoop );
 
 				if ( $doing_ajax || $not_sapi_cli ) {
 					$products_synced = $syncLoop + 1;
@@ -849,7 +852,7 @@ class WCPIMH_Import {
 								} else {
 									class_task = 'odd';
 								}
-								$(".toplevel_page_import_holded #loglist").animate({ scrollTop: $(".toplevel_page_import_holded #loglist")[0].scrollHeight}, 1000);
+								$(".toplevel_page_import_holded #loglist").animate({ scrollTop: $(".toplevel_page_import_holded #loglist")[0].scrollHeight}, 2000);
 							},
 							error: function (xhr, text_status, error_thrown) {
 								$(document).find('#start-sync').removeAttr('disabled');
