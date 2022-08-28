@@ -239,7 +239,7 @@ class WCPIMH_Import {
 	 * @param array  $pack_items Array of packs: post_id and qty.
 	 * @return void.
 	 */
-	public function sync_product( $item, $product_id = 0, $type, $pack_items = null ) {
+	public function sync_product( $item, $product_id = 0, $type = 'simple', $pack_items = null ) {
 		global $connwoo_pro;
 
 		$imh_settings     = get_option( 'imhset' );
