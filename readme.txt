@@ -45,6 +45,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 *   New Admin design.
 *   Fix: Shipping order cost fixed not implemented in order.
 *   Fix: Fatal error no products in automation.
+*   Fix: Faster manual sync.
 *   Premium Fix: Shipping order info updated.
 
 = 2.0.1 =
