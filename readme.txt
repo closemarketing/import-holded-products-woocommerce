@@ -41,11 +41,12 @@ WordPress installation and then activate the Plugin from Plugins page.
 
 == Changelog ==
 = 2.1.0 =
-*   Fix: error message order.
 *   New Admin design.
+*   Fix: error message order.
 *   Fix: Shipping order cost fixed not implemented in order.
 *   Fix: Fatal error no products in automation.
 *   Fix: Faster manual sync.
+*   Fix: Errors in PHP8.
 *   Premium Fix: Shipping order info updated.
 
 = 2.0.1 =

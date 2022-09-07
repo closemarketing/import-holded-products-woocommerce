@@ -298,11 +298,11 @@ class WCPIMH_Import {
 				'purchase_note'      => '',
 				'virtual'            => $is_virtual,
 				'downloadable'       => false,
-				'category_ids'       => '',
-				'tag_ids'            => '',
+				'category_ids'       => array(),
+				'tag_ids'            => array(),
 				'shipping_class_id'  => 0,
 				'image_id'           => '',
-				'gallery_image_ids'  => '',
+				'gallery_image_ids'  => array(),
 				'status'             => $post_status,
 			);
 		}
