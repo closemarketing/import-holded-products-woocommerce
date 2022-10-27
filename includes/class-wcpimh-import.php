@@ -347,12 +347,12 @@ class WCPIMH_Import {
 				break;
 			case 'variable':
 				if ( connwoo_is_pro() && class_exists( 'CONNWOO_Import_PRO' ) ) {
-					$connwoo_pro->sync_product_variable( $product, $item, $is_new_product, $rate_id );
+					$product_props = $connwoo_pro->sync_product_variable( $product, $item, $is_new_product, $rate_id );
 				}
 				break;
 			case 'pack':
 				if ( connwoo_is_pro() && class_exists( 'CONNWOO_Import_PRO' ) ) {
-					$connwoo_pro->sync_product_pack( $product, $item, $pack_items );
+					$product_props = $connwoo_pro->sync_product_pack( $product, $item, $pack_items );
 				}
 				break;
 		}
